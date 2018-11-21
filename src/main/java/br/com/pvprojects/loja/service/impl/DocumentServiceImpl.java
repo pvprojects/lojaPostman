@@ -36,7 +36,7 @@ public class DocumentServiceImpl implements DocumentService {
         doc.setCustomerId(customer.getId());
         doc.setNumber(document.getNumber());
         doc.setType(document.getType());
-        documentRepository.save(doc);
+        documentRepository.saveAndFlush(doc);
 
         return doc;
     }
