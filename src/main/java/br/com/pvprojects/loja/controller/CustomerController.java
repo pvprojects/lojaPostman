@@ -43,7 +43,7 @@ public class CustomerController {
     private ResponseEntity<CustomerData> updateCustomer(@PathVariable(name = "customerId") String customerId,
             @RequestBody Customer customer) {
 
-        CustomerData customerData = customerService.updateCustomer(customerId, customer);
+        CustomerData customerData = this.customerService.updateCustomer(customerId, customer);
 
         return new ResponseEntity<>(customerData, HttpStatus.OK);
     }

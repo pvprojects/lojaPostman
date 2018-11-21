@@ -36,20 +36,20 @@ public class DocumentServiceImpl implements DocumentService {
         doc.setCustomerId(customer.getId());
         doc.setNumber(document.getNumber());
         doc.setType(document.getType());
-        documentRepository.saveAndFlush(doc);
+        this.documentRepository.saveAndFlush(doc);
 
         return doc;
     }
 
     @Override
     public List<Document> findAllDocuments(String login) {
-        List<Document> list = documentRepository.findAll();
+        List<Document> list = this.documentRepository.findAll();
         return list;
     }
 
     @Override
     public DocumentsData find(Type type, String number) {
-        Document document = documentRepository.findByTypeAndNumber(type, number);
+        Document document = this.documentRepository.findByTypeAndNumber(type, number);
         DocumentsData documentsData = this.findDto(document);
         return documentsData;
     }

@@ -41,7 +41,7 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
         newCretial.setLogin(credential.getPassword());
         newCretial.setPassword(new BCryptPasswordEncoder().encode(credential.getPassword()));
         newCretial.setPerfil(Perfil.CLIENTE);
-        credentialRepository.saveAndFlush(newCretial);
+        this.credentialRepository.saveAndFlush(newCretial);
 
         return newCretial;
     }
@@ -54,14 +54,14 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
         newCretial.setLogin(customer.getLogin());
         newCretial.setPassword(customer.getPassword());
         newCretial.setPerfil(Perfil.CLIENTE);
-        credentialRepository.saveAndFlush(newCretial);
+        this.credentialRepository.saveAndFlush(newCretial);
 
         return newCretial;
     }
 
     @Override
     public CredentialData findByLogin(String login) {
-        Credential credential = credentialRepository.findByLoginIgnoreCase(login);
+        Credential credential = this.credentialRepository.findByLoginIgnoreCase(login);
 
         CredentialData credentialData = new CredentialData();
         credentialData.setId(credential.getId());
@@ -77,32 +77,32 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
     @Override
     @Transactional
     public void changeLogin(String newLogin, String oldLogin) {
-        Customer customer = customerRepository.findByLoginIgnoreCase(oldLogin);
-        Credential credential = credentialRepository.findByLoginIgnoreCase(oldLogin);
+        Customer customer = this.customerRepository.findByLoginIgnoreCase(oldLogin);
+        Credential credential = this.credentialRepository.findByLoginIgnoreCase(oldLogin);
 
-        Customer customerExist = customerRepository.findByLoginIgnoreCase(newLogin);
+        Customer customerExist = this.customerRepository.findByLoginIgnoreCase(newLogin);
         if (null != customerExist)
             log.error("Email ja existe em uma conta");
         //TODO exception
 
         customer.setLogin(newLogin);
-        customerRepository.saveAndFlush(customer);
+        this.customerRepository.saveAndFlush(customer);
 
         credential.setLogin(newLogin);
-        credentialRepository.saveAndFlush(credential);
+        this.credentialRepository.saveAndFlush(credential);
     }
 
     @Override
     @Transactional
     public void changePassword(String newPassord, String login) {
-        Credential credential = credentialRepository.findByLoginIgnoreCase(login);
-        Customer customer = customerRepository.findByLoginIgnoreCase(login);
+        Credential credential = this.credentialRepository.findByLoginIgnoreCase(login);
+        Customer customer = this.customerRepository.findByLoginIgnoreCase(login);
 
         credential.setPassword(new BCryptPasswordEncoder().encode(newPassord));
-        credentialRepository.saveAndFlush(credential);
+        this.credentialRepository.saveAndFlush(credential);
 
         customer.setPassword(new BCryptPasswordEncoder().encode(newPassord));
-        customerRepository.saveAndFlush(customer);
+        this.customerRepository.saveAndFlush(customer);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
     }
 
     public UserDetails loadUserByUsername(String login) {
-        Credential credential = credentialRepository.findByLoginIgnoreCase(login);
+        Credential credential = this.credentialRepository.findByLoginIgnoreCase(login);
         if (null == credential) {
             throw new UsernameNotFoundException("Invalid username or password.");
         }
