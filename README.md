@@ -1,6 +1,9 @@
 ﻿# Projeto em Spring Boot ##
 
-Projeto Loja 
+Projeto utilizando:
+- Spring Boot
+- Oauth2 
+- JUnit
 
 ##Guia de codificação
 

@@ -23,11 +23,14 @@ public class CustomerServiceImpl implements CustomerService {
 
     private static final Logger log = LoggerFactory.getLogger(CustomerServiceImpl.class);
 
-    @Autowired
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
+    private final CredentialService credentialService;
 
     @Autowired
-    private CredentialService credentialService;
+    public CustomerServiceImpl(CustomerRepository customerRepository, CredentialService credentialService) {
+        this.customerRepository = customerRepository;
+        this.credentialService = credentialService;
+    }
 
 
     @Override

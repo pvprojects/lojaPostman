@@ -41,9 +41,6 @@ public class Document {
     @Column(name = "CUSTOMERID")
     private String customerId;
 
-    @NotEmpty(message = "O tipo do documento não pode ser vazio")
-    @NotNull(message = "O tipo do documento não pode ser nulo")
-    @Length(min = 2, message = "O tipo do documento não pode ter menos de 2 caracteres")
     @Column(name = "TYPE")
     @Enumerated(EnumType.STRING)
     private Type type;
