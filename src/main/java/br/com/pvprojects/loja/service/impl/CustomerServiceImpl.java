@@ -40,9 +40,9 @@ public class CustomerServiceImpl implements CustomerService {
             log.error("Invalid form");
 
         Customer newCustomer = this.createCustomerHelper(customer);
-        customerRepository.saveAndFlush(newCustomer);
+        this.customerRepository.saveAndFlush(newCustomer);
 
-        credentialService.create(newCustomer);
+        this.credentialService.create(newCustomer);
 
         return newCustomer;
     }
@@ -68,7 +68,7 @@ public class CustomerServiceImpl implements CustomerService {
         customerPersisted.setFatherName(customer.getFatherName());
         customerPersisted.setNumberOfChildren(customer.getNumberOfChildren());
         customerPersisted.setParentId(customer.getParentId());
-        customerRepository.saveAndFlush(customerPersisted);
+        this.customerRepository.saveAndFlush(customerPersisted);
 
         CustomerData customerData = this.customerDto(customerPersisted);
 

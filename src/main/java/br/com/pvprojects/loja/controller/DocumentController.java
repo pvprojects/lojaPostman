@@ -27,7 +27,7 @@ public class DocumentController {
     private DocumentService documentService;
 
     @PostMapping(path = "/create")
-    public ResponseEntity<DocumentsData> createCustomer(@RequestBody Document document,
+    public ResponseEntity<DocumentsData> createDocument(@RequestBody Document document,
             @QueryParam("login") String login) {
 
         Document newDocument = this.documentService.create(document, login);

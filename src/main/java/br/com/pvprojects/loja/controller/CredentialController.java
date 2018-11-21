@@ -24,7 +24,7 @@ public class CredentialController {
     private CredentialService credentialService;
 
     @GetMapping(path = "/login/{email}")
-    public ResponseEntity<CredentialData> getCustomerById(@PathVariable(name = "email") String email) {
+    public ResponseEntity<CredentialData> getCredentialByLogin(@PathVariable(name = "email") String email) {
 
         CredentialData credentialData = this.credentialService.findByLogin(email);
 
