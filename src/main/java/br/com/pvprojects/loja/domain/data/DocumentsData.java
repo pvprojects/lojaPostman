@@ -16,6 +16,7 @@ public class DocumentsData implements Serializable {
     private Type type;
     private String number;
     private LocalDateTime created;
+    private LocalDateTime updated;
 
     public DocumentsData() {
     }
@@ -24,12 +25,14 @@ public class DocumentsData implements Serializable {
         this.id = id;
     }
 
-    public DocumentsData(Integer id, String customerId, Type type, String number, LocalDateTime created) {
+    public DocumentsData(Integer id, String customerId, Type type, String number, LocalDateTime created,
+            LocalDateTime updated) {
         this.id = id;
         this.customerId = customerId;
         this.type = type;
         this.number = number;
         this.created = created;
+        this.updated = updated;
     }
 
     public Integer getId() {
@@ -72,6 +75,14 @@ public class DocumentsData implements Serializable {
         this.created = created;
     }
 
+    public LocalDateTime getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(LocalDateTime updated) {
+        this.updated = updated;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -81,12 +92,13 @@ public class DocumentsData implements Serializable {
                 Objects.equals(customerId, that.customerId) &&
                 type == that.type &&
                 Objects.equals(number, that.number) &&
-                Objects.equals(created, that.created);
+                Objects.equals(created, that.created) &&
+                Objects.equals(updated, that.updated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customerId, type, number, created);
+        return Objects.hash(id, customerId, type, number, created, updated);
     }
 
     @Override
@@ -97,6 +109,7 @@ public class DocumentsData implements Serializable {
                 ", type=" + type +
                 ", number='" + number + '\'' +
                 ", created=" + created +
+                ", updated=" + updated +
                 '}';
     }
 }

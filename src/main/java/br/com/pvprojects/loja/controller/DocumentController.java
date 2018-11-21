@@ -10,12 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.pvprojects.loja.domain.Document;
 import br.com.pvprojects.loja.domain.data.DocumentsData;
+import br.com.pvprojects.loja.domain.form.DocumentChange;
 import br.com.pvprojects.loja.service.DocumentService;
 import br.com.pvprojects.loja.util.enums.Type;
 
@@ -50,5 +52,16 @@ public class DocumentController {
         DocumentsData documentsData = this.documentService.find(Type.CPF, number);
 
         return new ResponseEntity<>(documentsData, HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/change/{type}/{number}")
+    public ResponseEntity<Void> changeDocument(@PathVariable(name = "type") String type,
+            @PathVariable(name = "number") String number,
+            @QueryParam("login") String login,
+            @RequestBody DocumentChange documentChange) {
+
+        this.documentService.changeDocument(type, number, login, documentChange);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
