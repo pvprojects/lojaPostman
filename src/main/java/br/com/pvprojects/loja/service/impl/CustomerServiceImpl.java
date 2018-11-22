@@ -15,6 +15,8 @@ import br.com.pvprojects.loja.domain.data.CustomerData;
 import br.com.pvprojects.loja.repository.CustomerRepository;
 import br.com.pvprojects.loja.service.CredentialService;
 import br.com.pvprojects.loja.service.CustomerService;
+import br.com.pvprojects.loja.service.exceptions.HeaderNotFoundException;
+import br.com.pvprojects.loja.util.Helper;
 import br.com.pvprojects.loja.util.enums.Gender;
 import br.com.pvprojects.loja.util.enums.PersonType;
 
@@ -77,6 +79,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerData findById(String customerId) {
+        Helper h = new Helper();
+        String headerTeste = h.getHeaderFromRequest("Teste");
 
         if (Strings.isBlank(customerId)) {
             log.error("Invalid customerId.");

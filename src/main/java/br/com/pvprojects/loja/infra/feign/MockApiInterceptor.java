@@ -3,6 +3,7 @@ package br.com.pvprojects.loja.infra.feign;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import br.com.pvprojects.loja.util.Helper;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 
@@ -17,6 +18,11 @@ public class MockApiInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate template) {
-        template.header(APPLICATION_ID_HEADER, APPLICATION_ID_VALUE);
+        template.header(APPLICATION_ID_HEADER, this.getApplicationIdValue());
+    }
+
+    private String getApplicationIdValue() {
+        Helper h = new Helper();
+        return h.getHeaderFromRequest("app_id");
     }
 }
