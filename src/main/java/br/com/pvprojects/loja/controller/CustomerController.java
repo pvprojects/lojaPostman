@@ -1,5 +1,7 @@
 package br.com.pvprojects.loja.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +25,7 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PostMapping
-    public ResponseEntity<CustomerData> createCustomer(@RequestBody Customer customer) {
+    public ResponseEntity<CustomerData> createCustomer(@RequestBody @Valid Customer customer) {
 
         Customer newCustomer = this.customerService.create(customer);
         CustomerData customerData = new CustomerData(newCustomer.getId());
