@@ -19,16 +19,14 @@ public class ResourceExceptionHandler {
     @ExceptionHandler(HeaderNotFoundException.class)
     public ResponseEntity<StandardError> headerNotFound(HeaderNotFoundException ex, HttpServletRequest request) {
 
-        StandardError err = new StandardError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Header_Not_Found",
-                ex.getMessage(), request.getRequestURI());
+        StandardError err = new StandardError("Header_Not_Found", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StandardError> validation(MethodArgumentNotValidException e, HttpServletRequest request) {
 
-        ValidationError err = new ValidationError(LocalDateTime.now(), HttpStatus.UNPROCESSABLE_ENTITY.value()
-                , "Erro de validação", null, request.getRequestURI());
+        ValidationError err = new ValidationError("Erro de validação", null);
         for (FieldError x : e.getBindingResult().getFieldErrors()) {
             err.addError(x.getField(), x.getDefaultMessage());
         }
