@@ -20,7 +20,7 @@ public class Helper {
         return randomUUID + "-" + dateFormatter.format(new Date());
     }
 
-    public String getHeaderFromRequest(String keyHeader) {
+    public static String getHeaderFromRequest(String keyHeader) {
 
         HttpServletRequest curRequest =
                 ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())

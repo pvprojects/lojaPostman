@@ -79,8 +79,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerData findById(String customerId) {
-        Helper h = new Helper();
-        String headerTeste = h.getHeaderFromRequest("Teste");
 
         if (Strings.isBlank(customerId)) {
             log.error("Invalid customerId.");
