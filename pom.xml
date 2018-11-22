@@ -102,7 +102,13 @@
             <version>9.5.1</version>
         </dependency>
 
-        <!-- JAVAX - https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+        <dependency>
+            <groupId>com.netflix.feign</groupId>
+            <artifactId>feign-jaxrs</artifactId>
+            <version>8.18.0</version>
+        </dependency>
+
+        <!-- getHeader from request -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -121,6 +127,7 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>

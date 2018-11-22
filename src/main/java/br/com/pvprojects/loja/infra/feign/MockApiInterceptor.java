@@ -22,6 +22,6 @@ public class MockApiInterceptor implements RequestInterceptor {
     }
 
     private String getApplicationIdValue() {
-        return Helper.getHeaderFromRequest("app_id");
+        return Helper.getHeaderFromRequest("app-id-mock");
     }
 }

@@ -16,6 +16,7 @@ import feign.Request;
 import feign.Retryer;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+import feign.jaxrs.JAXRSContract;
 import feign.slf4j.Slf4jLogger;
 
 @Configuration
@@ -39,6 +40,7 @@ public class FeignConfig {
     @Bean
     public MockApiService mockApiServiceFeign() {
         return Feign.builder()
+                .contract(new JAXRSContract())
                 .encoder(new JacksonEncoder(objectMapper))
                 .decoder(new JacksonDecoder(objectMapper))
                 .logger(new Slf4jLogger())
