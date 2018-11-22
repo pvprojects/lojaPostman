@@ -15,4 +15,6 @@ public interface DocumentRepository extends JpaRepository<Document, Integer> {
 
     List<Document> findByCustomerId(String customerId);
 
+    Document findByCustomerIdAndTypeAndNumber(String customerId, Type type, String number);
+
 }
