@@ -1,74 +1,51 @@
-package br.com.pvprojects.loja.domain;
+package br.com.pvprojects.loja.domain.data;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class AddressData {
 
-import br.com.pvprojects.loja.util.LocalDateDeserializer;
-import br.com.pvprojects.loja.util.LocalDateSerializer;
+    private Integer id;
+    private String name;
+    private String zipCode;
+    private String number;
+    private String complement;
+    private String street;
+    private String district;
+    private String city;
+    private String state;
+    private String country;
+    private String customerId;
+    private LocalDateTime created;
+    private LocalDateTime updated;
 
-@Entity
-@Table(name = "ADDRESS")
-@SequenceGenerator(name = "ADDRESS_SEQ", sequenceName = "ADDRESS_SEQ", allocationSize = 1)
-public class Address {
-
-    public Address() {
+    public AddressData() {
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ADDRESS_SEQ")
-    @Column(name = "ID")
-    private Integer id;
+    public AddressData(Integer id, String name, String zipCode, String number, String complement, String street,
+            String district, String city, String state, String country, String customerId, LocalDateTime created,
+            LocalDateTime updated) {
+        this.id = id;
+        this.name = name;
+        this.zipCode = zipCode;
+        this.number = number;
+        this.complement = complement;
+        this.street = street;
+        this.district = district;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+        this.customerId = customerId;
+        this.created = created;
+        this.updated = updated;
+    }
 
-    @Column(name = "NAME")
-    private String name;
-
-    @Column(name = "ZIPCODE")
-    private String zipCode;
-
-    @Column(name = "NUMBER")
-    private String number;
-
-    @Column(name = "COMPLEMENT")
-    private String complement;
-
-    @Column(name = "STREET")
-    private String street;
-
-    @Column(name = "DISTRICT")
-    private String district;
-
-    @Column(name = "CITY")
-    private String city;
-
-    @Column(name = "STATE")
-    private String state;
-
-    @Column(name = "COUNTRY")
-    private String country;
-
-    @Column(name = "CUSTOMERID")
-    private String customerId;
-
-    @Column(name = "CREATED_AT")
-    @JsonSerialize(using = LocalDateSerializer.class)
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    private LocalDateTime created;
-
-    @Column(name = "UPDATED_AT")
-    @JsonSerialize(using = LocalDateSerializer.class)
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    private LocalDateTime updated;
+    public AddressData(Integer id) {
+        this.id = id;
+    }
 
     public Integer getId() {
         return id;
@@ -178,20 +155,20 @@ public class Address {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Address address = (Address) o;
-        return Objects.equals(id, address.id) &&
-                Objects.equals(name, address.name) &&
-                Objects.equals(zipCode, address.zipCode) &&
-                Objects.equals(number, address.number) &&
-                Objects.equals(complement, address.complement) &&
-                Objects.equals(street, address.street) &&
-                Objects.equals(district, address.district) &&
-                Objects.equals(city, address.city) &&
-                Objects.equals(state, address.state) &&
-                Objects.equals(country, address.country) &&
-                Objects.equals(customerId, address.customerId) &&
-                Objects.equals(created, address.created) &&
-                Objects.equals(updated, address.updated);
+        AddressData that = (AddressData) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(zipCode, that.zipCode) &&
+                Objects.equals(number, that.number) &&
+                Objects.equals(complement, that.complement) &&
+                Objects.equals(street, that.street) &&
+                Objects.equals(district, that.district) &&
+                Objects.equals(city, that.city) &&
+                Objects.equals(state, that.state) &&
+                Objects.equals(country, that.country) &&
+                Objects.equals(customerId, that.customerId) &&
+                Objects.equals(created, that.created) &&
+                Objects.equals(updated, that.updated);
     }
 
     @Override
@@ -202,7 +179,7 @@ public class Address {
 
     @Override
     public String toString() {
-        return "Address{" +
+        return "AddressData{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", zipCode='" + zipCode + '\'' +
