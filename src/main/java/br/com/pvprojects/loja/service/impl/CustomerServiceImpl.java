@@ -84,8 +84,8 @@ public class CustomerServiceImpl implements CustomerService {
             this.customerRepository.saveAndFlush(customerPersisted);
 
         } catch (Exception e) {
-            log.error("Erro ao atualizar customer");
-            throw new DefaultException("Erro ao atualizar customer");
+            log.error("Erro ao atualizar customer.");
+            throw new DefaultException("Erro ao atualizar customer.");
         }
 
         credentialService.updateLoginWithCustomer(customerPersisted);

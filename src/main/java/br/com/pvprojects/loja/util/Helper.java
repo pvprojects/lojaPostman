@@ -1,8 +1,10 @@
 package br.com.pvprojects.loja.util;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,6 +15,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import br.com.pvprojects.loja.infra.handle.exceptions.DefaultException;
+import br.com.pvprojects.loja.util.enums.Type;
 
 public class Helper {
 
@@ -45,5 +48,13 @@ public class Helper {
     public static void checkIfCollectionIsNullOrEmpty(Collection collection, String error) {
         if (CollectionUtils.isEmpty(collection))
             throw new DefaultException(error);
+    }
+
+    public static List<String> enumList() {
+        List<String> types = new ArrayList<>();
+        for (Type t : Type.values()) {
+            types.add(t.name());
+        }
+        return types;
     }
 }
