@@ -59,7 +59,7 @@ public class CustomerServiceImplTest extends BaseServiceTests {
     public void findById() {
         when(customerRepository.findById(anyString())).thenReturn(customerOptional);
 
-        CustomerData customerData = customerService.findById(customerId);
+        CustomerData customerData = customerService.findByIdOrLogin(customerId);
         assertNotNull(customerData);
     }
 }

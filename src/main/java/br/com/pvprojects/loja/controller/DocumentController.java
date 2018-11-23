@@ -2,6 +2,7 @@ package br.com.pvprojects.loja.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.ws.rs.QueryParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class DocumentController {
     private DocumentService documentService;
 
     @PostMapping(path = "/create")
-    public ResponseEntity<DocumentsData> createDocument(@RequestBody Document document,
+    public ResponseEntity<DocumentsData> createDocument(@RequestBody @Valid Document document,
             @QueryParam("login") String login) {
 
         Document newDocument = this.documentService.create(document, login);

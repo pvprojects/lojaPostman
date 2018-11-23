@@ -12,6 +12,8 @@ public interface CredentialService {
 
     CredentialData findByLogin(String login);
 
+    void updateLoginWithCustomer(Customer customer);
+
     void changeLogin(String newLogin, String oldLogin);
 
     void changePassword(String newPassord, String login);

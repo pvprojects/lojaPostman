@@ -2,7 +2,6 @@ package br.com.pvprojects.loja.service.impl;
 
 import java.util.Optional;
 
-import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.pvprojects.loja.domain.Customer;
 import br.com.pvprojects.loja.domain.data.CustomerData;
+import br.com.pvprojects.loja.infra.handle.exceptions.DefaultException;
 import br.com.pvprojects.loja.repository.CustomerRepository;
 import br.com.pvprojects.loja.service.CredentialService;
 import br.com.pvprojects.loja.service.CustomerService;
+import br.com.pvprojects.loja.util.Helper;
 import br.com.pvprojects.loja.util.enums.Gender;
 import br.com.pvprojects.loja.util.enums.PersonType;
 
@@ -32,15 +33,21 @@ public class CustomerServiceImpl implements CustomerService {
         this.credentialService = credentialService;
     }
 
-
     @Override
     @Transactional
     public Customer create(Customer customer) {
-        if (null == customer)
-            log.error("Invalid form");
+
+        Helper.checkIfObjectIsNull(customer, "Informações inválidas.");
+        this.loginIsUnique(customer.getLogin());
 
         Customer newCustomer = this.createCustomerHelper(customer);
-        this.customerRepository.saveAndFlush(newCustomer);
+
+        try {
+            this.customerRepository.saveAndFlush(newCustomer);
+        } catch (Exception e) {
+            log.error("Erro ao criar customer");
+            throw new DefaultException("Erro ao criar customer");
+        }
 
         this.credentialService.create(newCustomer);
 
@@ -51,24 +58,37 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     public CustomerData updateCustomer(String customerId, Customer customer) {
 
+        Helper.checkIfObjectIsNull(customer, "Informações inválidas.");
+        Helper.checkIfStringIsBlank(customerId, "customerId inválido.");
+        this.loginIsUnique(customer.getLogin());
+
         final Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
 
         if (!optionalCustomer.isPresent())
-            return null;
+            throw new DefaultException("Usuário não encontrado.");
 
         Customer customerPersisted = optionalCustomer.get();
 
-        customerPersisted.setFullName(customer.getFullName());
-        customerPersisted.setPersonType(customer.getPersonType() != null ? customer.getPersonType() : PersonType.F);
-        customerPersisted.setNickName(customer.getNickName());
-        customerPersisted.setBirthDate(customer.getBirthDate());
-        customerPersisted.setCountry(customer.getCountry());
-        customerPersisted.setGender(customer.getGender() != null ? customer.getGender() : Gender.I);
-        customerPersisted.setMotherName(customer.getMotherName());
-        customerPersisted.setFatherName(customer.getFatherName());
-        customerPersisted.setNumberOfChildren(customer.getNumberOfChildren());
-        customerPersisted.setParentId(customer.getParentId());
-        this.customerRepository.saveAndFlush(customerPersisted);
+        try {
+
+            customerPersisted.setFullName(customer.getFullName());
+            customerPersisted.setPersonType(customer.getPersonType() != null ? customer.getPersonType() : PersonType.F);
+            customerPersisted.setNickName(customer.getNickName());
+            customerPersisted.setBirthDate(customer.getBirthDate());
+            customerPersisted.setCountry(customer.getCountry());
+            customerPersisted.setGender(customer.getGender() != null ? customer.getGender() : Gender.I);
+            customerPersisted.setMotherName(customer.getMotherName());
+            customerPersisted.setFatherName(customer.getFatherName());
+            customerPersisted.setNumberOfChildren(customer.getNumberOfChildren());
+            customerPersisted.setParentId(customer.getParentId());
+            this.customerRepository.saveAndFlush(customerPersisted);
+
+        } catch (Exception e) {
+            log.error("Erro ao atualizar customer.");
+            throw new DefaultException("Erro ao atualizar customer.");
+        }
+
+        credentialService.updateLoginWithCustomer(customerPersisted);
 
         CustomerData customerData = this.customerDto(customerPersisted);
 
@@ -76,20 +96,21 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerData findById(String customerId) {
+    public CustomerData findByIdOrLogin(String customerId) {
+        Helper.checkIfStringIsBlank(customerId, "customerId ou email inválido.");
 
-        if (Strings.isBlank(customerId)) {
-            log.error("Invalid customerId.");
+        Optional<Customer> customerById = customerRepository.findById(customerId);
+
+        if (customerById.isPresent()) {
+            return this.customerDto(customerById.get());
         }
 
-        Optional<Customer> customer = customerRepository.findById(customerId);
-        if (!customer.isPresent())
-            return null;
+        Customer customrByLogin = customerRepository.findByLoginIgnoreCase(customerId);
+        if (null != customrByLogin) {
+            return this.customerDto(customrByLogin);
+        }
 
-        Customer currentCustomer = customer.get();
-        CustomerData customerData = this.customerDto(currentCustomer);
-
-        return customerData;
+        return null;
     }
 
     private Customer createCustomerHelper(Customer customer) {
@@ -111,6 +132,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     private CustomerData customerDto(Customer customer) {
         CustomerData customerData = new CustomerData();
+        customerData.setId(customer.getId());
         customerData.setFullName(customer.getFullName());
         customerData.setPersonType(customer.getPersonType());
         customerData.setNickName(customer.getNickName());
@@ -124,5 +146,14 @@ public class CustomerServiceImpl implements CustomerService {
         customerData.setNumberOfChildren(customer.getNumberOfChildren());
         customerData.setParentId(customer.getParentId());
         return customerData;
+    }
+
+    private boolean loginIsUnique(String login) {
+        Optional<Customer> customerOptional = Optional.ofNullable(this.customerRepository.findByLoginIgnoreCase(login));
+
+        if (customerOptional.isPresent())
+            throw new DefaultException("O login informado já existe.");
+
+        return true;
     }
 }

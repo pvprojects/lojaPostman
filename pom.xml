@@ -69,6 +69,13 @@
             <version>5.1.6</version>
         </dependency>
 
+        <!--  DRIVE POSTGRE -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.5</version>
+        </dependency>
+
         <!-- Utilizar @QueryParam-->
         <dependency>
             <groupId>com.sun.jersey</groupId>

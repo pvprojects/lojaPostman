@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.pvprojects.loja.domain.Customer;
 import br.com.pvprojects.loja.domain.data.CustomerData;
 import br.com.pvprojects.loja.service.CustomerService;
+import br.com.pvprojects.loja.util.Helper;
 
 @RestController
 @RequestMapping("/customer")
@@ -36,7 +37,8 @@ public class CustomerController {
     @GetMapping(path = "/{customerId}")
     public ResponseEntity<CustomerData> getCustomerById(@PathVariable(name = "customerId") String customerId) {
 
-        CustomerData customerData = this.customerService.findById(customerId);
+        CustomerData customerData = this.customerService.findByIdOrLogin(customerId);
+        Helper.checkIfObjectIsNull(customerData, "Usuário não encontrado.");
 
         return new ResponseEntity<>(customerData, HttpStatus.OK);
     }

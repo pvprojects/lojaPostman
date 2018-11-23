@@ -9,15 +9,15 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import br.com.pvprojects.loja.infra.handle.exceptions.HeaderNotFoundException;
+import br.com.pvprojects.loja.infra.handle.exceptions.DefaultException;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
 
-    @ExceptionHandler(HeaderNotFoundException.class)
-    public ResponseEntity<StandardError> headerNotFound(HeaderNotFoundException ex, HttpServletRequest request) {
+    @ExceptionHandler(DefaultException.class)
+    public ResponseEntity<StandardError> headerNotFound(DefaultException ex, HttpServletRequest request) {
 
-        StandardError err = new StandardError("Header_Not_Found", ex.getMessage());
+        StandardError err = new StandardError("Erro", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
