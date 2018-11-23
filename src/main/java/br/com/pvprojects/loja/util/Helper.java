@@ -1,15 +1,18 @@
 package br.com.pvprojects.loja.util;
 
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import br.com.pvprojects.loja.infra.handle.exceptions.HeaderNotFoundException;
+import br.com.pvprojects.loja.infra.handle.exceptions.DefaultException;
 
 public class Helper {
 
@@ -21,14 +24,26 @@ public class Helper {
     }
 
     public static String getHeaderFromRequest(String keyHeader) {
+        HttpServletRequest curRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
-        HttpServletRequest curRequest =
-                ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                        .getRequest();
-        if (null == curRequest.getHeader(keyHeader)) {
-            throw new HeaderNotFoundException("Header não encontrado");
-        }
+        if (null == curRequest.getHeader(keyHeader))
+            throw new DefaultException("Header não encontrado");
 
         return curRequest.getHeader(keyHeader);
+    }
+
+    public static void checkIfStringIsBlank(String string, String error) {
+        if (null == string || string.isEmpty())
+            throw new DefaultException(error);
+    }
+
+    public static void checkIfObjectIsNull(Object object, String error) {
+        if (object == null)
+            throw new DefaultException(error);
+    }
+
+    public static void checkIfCollectionIsNullOrEmpty(Collection collection, String error) {
+        if (CollectionUtils.isEmpty(collection))
+            throw new DefaultException(error);
     }
 }
