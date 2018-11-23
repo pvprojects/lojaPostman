@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import br.com.pvprojects.loja.infra.handle.exceptions.BadRequestException;
 import br.com.pvprojects.loja.infra.handle.exceptions.DefaultException;
 import br.com.pvprojects.loja.util.enums.Type;
 
@@ -30,7 +30,7 @@ public class Helper {
         HttpServletRequest curRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
         if (null == curRequest.getHeader(keyHeader))
-            throw new DefaultException("Header não encontrado");
+            throw new BadRequestException("Header não encontrado");
 
         return curRequest.getHeader(keyHeader);
     }
