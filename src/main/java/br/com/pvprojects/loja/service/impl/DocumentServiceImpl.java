@@ -81,8 +81,6 @@ public class DocumentServiceImpl implements DocumentService {
         Helper.checkIfStringIsBlank(login, "Login inválido.");
         Helper.checkIfObjectIsNull(documentChange, "Informações inválidas.");
 
-        String value = Validator.clean(documentChange.getNumber());
-
         List<String> list = Helper.enumList();
         if (!list.contains(type.toUpperCase()))
             throw new DefaultException("O tipo não é válido.");
@@ -99,7 +97,7 @@ public class DocumentServiceImpl implements DocumentService {
         Helper.checkIfObjectIsNull(document, "Documents não encontrado.");
 
         document.setType(documentChange.getType());
-        document.setNumber(value);
+        document.setNumber(Validator.clean(documentChange.getNumber()));
         document.setUpdated(LocalDateTime.now());
 
         try {
