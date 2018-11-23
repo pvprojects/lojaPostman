@@ -1,4 +1,4 @@
-package br.com.pvprojects.loja.controller.handle;
+package br.com.pvprojects.loja.infra.handle;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,7 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import br.com.pvprojects.loja.service.exceptions.HeaderNotFoundException;
+import br.com.pvprojects.loja.infra.handle.exceptions.HeaderNotFoundException;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {

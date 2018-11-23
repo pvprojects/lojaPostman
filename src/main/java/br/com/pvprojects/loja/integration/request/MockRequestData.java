@@ -1,4 +1,4 @@
-package br.com.pvprojects.loja.integration.response;
+package br.com.pvprojects.loja.integration.request;
 
 public class MockRequestData {
 

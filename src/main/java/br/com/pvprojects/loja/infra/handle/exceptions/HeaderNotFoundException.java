@@ -1,4 +1,4 @@
-package br.com.pvprojects.loja.service.exceptions;
+package br.com.pvprojects.loja.infra.handle.exceptions;
 
 public class HeaderNotFoundException extends RuntimeException {
 

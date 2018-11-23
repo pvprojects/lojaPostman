@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.pvprojects.loja.integration.MockApiService;
-import br.com.pvprojects.loja.integration.response.MockRequestData;
+import br.com.pvprojects.loja.integration.request.MockRequestData;
 import br.com.pvprojects.loja.integration.response.MockResponseData;
 
 @RestController

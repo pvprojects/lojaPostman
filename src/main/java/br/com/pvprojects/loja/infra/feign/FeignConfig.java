@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.pvprojects.loja.integration.MockApiService;
-import br.com.pvprojects.loja.integration.response.MockErrorDecoder;
+import br.com.pvprojects.loja.integration.decoder.MockErrorDecoder;
 import feign.Feign;
 import feign.Logger;
 import feign.Request;

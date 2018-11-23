@@ -1,4 +1,4 @@
-package br.com.pvprojects.loja.integration.response;
+package br.com.pvprojects.loja.integration.decoder;
 
 import feign.Response;
 import feign.codec.ErrorDecoder;

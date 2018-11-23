@@ -5,7 +5,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
-import br.com.pvprojects.loja.integration.response.MockRequestData;
+import br.com.pvprojects.loja.integration.request.MockRequestData;
 import br.com.pvprojects.loja.integration.response.MockResponseData;
 
 @Consumes("application/json")

@@ -1,7 +1,6 @@
-package br.com.pvprojects.loja.controller.handle;
+package br.com.pvprojects.loja.infra.handle;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

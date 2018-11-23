@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import br.com.pvprojects.loja.service.exceptions.HeaderNotFoundException;
+import br.com.pvprojects.loja.infra.handle.exceptions.HeaderNotFoundException;
 
 public class Helper {
 
