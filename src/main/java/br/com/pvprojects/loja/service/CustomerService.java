@@ -9,5 +9,5 @@ public interface CustomerService {
 
     CustomerData updateCustomer(String customerId, Customer customer);
 
-    CustomerData findById(String customerId);
+    CustomerData findByIdOrLogin(String customerId);
 }

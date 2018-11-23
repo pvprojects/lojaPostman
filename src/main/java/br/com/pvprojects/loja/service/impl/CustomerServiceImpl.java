@@ -33,7 +33,6 @@ public class CustomerServiceImpl implements CustomerService {
         this.credentialService = credentialService;
     }
 
-
     @Override
     @Transactional
     public Customer create(Customer customer) {
@@ -60,6 +59,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerData updateCustomer(String customerId, Customer customer) {
 
         Helper.checkIfObjectIsNull(customer, "Informações inválidas.");
+        Helper.checkIfStringIsBlank(customerId, "customerId inválido.");
         this.loginIsUnique(customer.getLogin());
 
         final Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
@@ -88,24 +88,29 @@ public class CustomerServiceImpl implements CustomerService {
             throw new DefaultException("Erro ao atualizar customer");
         }
 
+        credentialService.updateLoginWithCustomer(customerPersisted);
+
         CustomerData customerData = this.customerDto(customerPersisted);
 
         return customerData;
     }
 
     @Override
-    public CustomerData findById(String customerId) {
+    public CustomerData findByIdOrLogin(String customerId) {
+        Helper.checkIfStringIsBlank(customerId, "customerId ou email inválido.");
 
-        Helper.checkIfStringIsBlank(customerId, "customerId inválido.");
+        Optional<Customer> customerById = customerRepository.findById(customerId);
 
-        Optional<Customer> customer = customerRepository.findById(customerId);
-        if (!customer.isPresent())
-            throw new DefaultException("Usuário não encontrado.");
+        if (customerById.isPresent()) {
+            return this.customerDto(customerById.get());
+        }
 
-        Customer currentCustomer = customer.get();
-        CustomerData customerData = this.customerDto(currentCustomer);
+        Customer customrByLogin = customerRepository.findByLoginIgnoreCase(customerId);
+        if (null != customrByLogin) {
+            return this.customerDto(customrByLogin);
+        }
 
-        return customerData;
+        return null;
     }
 
     private Customer createCustomerHelper(Customer customer) {
@@ -127,6 +132,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     private CustomerData customerDto(Customer customer) {
         CustomerData customerData = new CustomerData();
+        customerData.setId(customer.getId());
         customerData.setFullName(customer.getFullName());
         customerData.setPersonType(customer.getPersonType());
         customerData.setNickName(customer.getNickName());
@@ -143,7 +149,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     private boolean loginIsUnique(String login) {
-
         Optional<Customer> customerOptional = Optional.ofNullable(this.customerRepository.findByLoginIgnoreCase(login));
 
         if (customerOptional.isPresent())
