@@ -2,16 +2,14 @@ package br.com.pvprojects.loja.domain.form;
 
 import java.util.Objects;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CredentialChangeLogin {
 
-    @NotEmpty(message = "O login não pode ser vazio")
-    @NotNull(message = "O login não pode ser nulo")
+    @NotBlank(message = "O login não pode ser vazio ou nulo")
     private String newLogin;
 
     public CredentialChangeLogin() {

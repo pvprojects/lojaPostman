@@ -2,18 +2,21 @@ package br.com.pvprojects.loja.service;
 
 import java.util.List;
 
+import org.dom4j.io.DocumentResult;
+
 import br.com.pvprojects.loja.domain.Document;
-import br.com.pvprojects.loja.domain.data.DocumentsData;
+import br.com.pvprojects.loja.domain.request.DocumentRequest;
+import br.com.pvprojects.loja.domain.response.DocumentsResponse;
 import br.com.pvprojects.loja.domain.form.DocumentChange;
 import br.com.pvprojects.loja.util.enums.Type;
 
 public interface DocumentService {
 
-    Document create(Document document, String login);
+    DocumentsResponse create(DocumentRequest documentRequest, String login);
 
-    List<Document> findAllDocuments(String login);
+    List<DocumentsResponse> findAllDocuments(String login);
 
-    DocumentsData find(Type type, String number);
+    DocumentsResponse find(Type type, String number);
 
-    DocumentsData changeDocument(String type, String number, String login,  DocumentChange documentChange);
+    DocumentsResponse changeDocument(String type, String number, String login,  DocumentChange documentChange);
 }

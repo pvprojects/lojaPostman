@@ -1,31 +1,39 @@
-package br.com.pvprojects.loja.domain.data;
+package br.com.pvprojects.loja.domain.response;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import br.com.pvprojects.loja.util.dateHelper.LocalDateDeserializer;
+import br.com.pvprojects.loja.util.dateHelper.LocalDateSerializer;
 import br.com.pvprojects.loja.util.enums.Type;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DocumentsData implements Serializable {
+public class DocumentsResponse implements Serializable {
 
     private Integer id;
     private String customerId;
     private Type type;
     private String number;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDateTime created;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDateTime updated;
 
-    public DocumentsData() {
+    public DocumentsResponse() {
     }
 
-    public DocumentsData(Integer id) {
+    public DocumentsResponse(Integer id) {
         this.id = id;
     }
 
-    public DocumentsData(Integer id, String customerId, Type type, String number, LocalDateTime created,
+    public DocumentsResponse(Integer id, String customerId, Type type, String number, LocalDateTime created,
             LocalDateTime updated) {
         this.id = id;
         this.customerId = customerId;
@@ -33,6 +41,11 @@ public class DocumentsData implements Serializable {
         this.number = number;
         this.created = created;
         this.updated = updated;
+    }
+
+    public DocumentsResponse(Type type, String number) {
+        this.type = type;
+        this.number = number;
     }
 
     public Integer getId() {
@@ -87,7 +100,7 @@ public class DocumentsData implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DocumentsData that = (DocumentsData) o;
+        DocumentsResponse that = (DocumentsResponse) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(customerId, that.customerId) &&
                 type == that.type &&
@@ -103,7 +116,7 @@ public class DocumentsData implements Serializable {
 
     @Override
     public String toString() {
-        return "DocumentsData{" +
+        return "DocumentsResponse{" +
                 "id=" + id +
                 ", customerId='" + customerId + '\'' +
                 ", type=" + type +

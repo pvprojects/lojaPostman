@@ -8,14 +8,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import br.com.pvprojects.loja.util.LocalDateDeserializer;
-import br.com.pvprojects.loja.util.LocalDateSerializer;
+import br.com.pvprojects.loja.util.dateHelper.LocalDateDeserializer;
+import br.com.pvprojects.loja.util.dateHelper.LocalDateSerializer;
 
 @Entity
 @Table(name = "ADDRESS")
@@ -217,5 +218,12 @@ public class Address {
                 ", created=" + created +
                 ", updated=" + updated +
                 '}';
+    }
+
+    @PrePersist
+    public void prePersist() {
+
+        if (created == null)
+            this.created = LocalDateTime.now();
     }
 }
