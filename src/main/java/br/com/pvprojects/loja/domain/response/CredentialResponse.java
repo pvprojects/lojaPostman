@@ -1,26 +1,36 @@
-package br.com.pvprojects.loja.domain.data;
+package br.com.pvprojects.loja.domain.response;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import br.com.pvprojects.loja.util.LocalDateDeserializer;
+import br.com.pvprojects.loja.util.LocalDateSerializer;
+import br.com.pvprojects.loja.util.enums.Perfil;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CredentialData implements Serializable {
+public class CredentialResponse implements Serializable {
 
     private Integer id;
     private String customerId;
     private String login;
     private String password;
-    private String perfil;
+    private Perfil perfil;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDateTime created;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDateTime updated;
 
-    public CredentialData() {
+    public CredentialResponse() {
     }
 
-    public CredentialData(Integer id, String customerId, String login, String password, String perfil,
+    public CredentialResponse(Integer id, String customerId, String login, String password, Perfil perfil,
             LocalDateTime created, LocalDateTime updated) {
         this.id = id;
         this.customerId = customerId;
@@ -31,7 +41,7 @@ public class CredentialData implements Serializable {
         this.updated = updated;
     }
 
-    public CredentialData(Integer id, String customerId, String login, String perfil, LocalDateTime created,
+    public CredentialResponse(Integer id, String customerId, String login, Perfil perfil, LocalDateTime created,
             LocalDateTime updated) {
         this.id = id;
         this.customerId = customerId;
@@ -73,11 +83,11 @@ public class CredentialData implements Serializable {
         this.password = password;
     }
 
-    public String getPerfil() {
+    public Perfil getPerfil() {
         return perfil;
     }
 
-    public void setPerfil(String perfil) {
+    public void setPerfil(Perfil perfil) {
         this.perfil = perfil;
     }
 
@@ -101,12 +111,12 @@ public class CredentialData implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CredentialData that = (CredentialData) o;
+        CredentialResponse that = (CredentialResponse) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(customerId, that.customerId) &&
                 Objects.equals(login, that.login) &&
                 Objects.equals(password, that.password) &&
-                Objects.equals(perfil, that.perfil) &&
+                perfil == that.perfil &&
                 Objects.equals(created, that.created) &&
                 Objects.equals(updated, that.updated);
     }
@@ -118,12 +128,12 @@ public class CredentialData implements Serializable {
 
     @Override
     public String toString() {
-        return "CredentialData{" +
+        return "CredentialResponse{" +
                 "id=" + id +
                 ", customerId='" + customerId + '\'' +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
-                ", perfil='" + perfil + '\'' +
+                ", perfil=" + perfil +
                 ", created=" + created +
                 ", updated=" + updated +
                 '}';

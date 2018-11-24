@@ -14,7 +14,7 @@ import org.mockito.Mock;
 
 import br.com.pvprojects.loja.base.BaseServiceTests;
 import br.com.pvprojects.loja.domain.Customer;
-import br.com.pvprojects.loja.domain.data.CustomerData;
+import br.com.pvprojects.loja.domain.response.CustomerResponse;
 import br.com.pvprojects.loja.repository.CustomerRepository;
 import br.com.pvprojects.loja.service.CredentialService;
 import br.com.pvprojects.loja.util.enums.Gender;
@@ -59,7 +59,7 @@ public class CustomerServiceImplTest extends BaseServiceTests {
     public void findById() {
         when(customerRepository.findById(anyString())).thenReturn(customerOptional);
 
-        CustomerData customerData = customerService.findByIdOrLogin(customerId);
-        assertNotNull(customerData);
+        CustomerResponse customerResponse = customerService.findByIdOrLogin(customerId);
+        assertNotNull(customerResponse);
     }
 }

@@ -1,7 +1,6 @@
 package br.com.pvprojects.loja.util;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -11,7 +10,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 public class LocalDateSerializer extends JsonSerializer<LocalDateTime> {
 
-    private static final String PATTERN = "dd-MM-yyyy";
+    private static final String PATTERN = "dd-MM-yyyy HH:mm:ss";
 
     @Override
     public void serialize(LocalDateTime value, JsonGenerator gen,

@@ -1,5 +1,6 @@
 package br.com.pvprojects.loja.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -10,7 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.pvprojects.loja.domain.Customer;
-import br.com.pvprojects.loja.domain.data.CustomerData;
+import br.com.pvprojects.loja.domain.request.CustomerResquest;
+import br.com.pvprojects.loja.domain.response.CustomerResponse;
 import br.com.pvprojects.loja.infra.handle.exceptions.DefaultException;
 import br.com.pvprojects.loja.repository.CustomerRepository;
 import br.com.pvprojects.loja.service.CredentialService;
@@ -35,117 +37,147 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional
-    public Customer create(Customer customer) {
+    public CustomerResponse create(CustomerResquest customerResquest) {
 
-        Helper.checkIfObjectIsNull(customer, "Informações inválidas.");
-        this.loginIsUnique(customer.getLogin());
+        Helper.checkIfObjectIsNull(customerResquest, "Informações inválidas.");
+        this.loginIsUnique(customerResquest.getLogin());
 
-        Customer newCustomer = this.createCustomerHelper(customer);
+        CustomerResponse customerResponse;
+
+        Customer customer = this.createCustomerHelper(customerResquest);
 
         try {
-            this.customerRepository.saveAndFlush(newCustomer);
+            this.customerRepository.saveAndFlush(customer);
         } catch (Exception e) {
             log.error("Erro ao criar customer");
             throw new DefaultException("Erro ao criar customer");
         }
 
-        this.credentialService.create(newCustomer);
+        this.credentialService.createWithCustomer(customer);
 
-        return newCustomer;
+        customerResponse = this.customerToCustomerResponse(customer);
+
+        return customerResponse;
     }
 
     @Override
     @Transactional
-    public CustomerData updateCustomer(String customerId, Customer customer) {
+    public CustomerResponse updateCustomer(String customerId, CustomerResquest customerResquest) {
 
-        Helper.checkIfObjectIsNull(customer, "Informações inválidas.");
+        Helper.checkIfObjectIsNull(customerResquest, "Informações inválidas.");
         Helper.checkIfStringIsBlank(customerId, "customerId inválido.");
-        this.loginIsUnique(customer.getLogin());
+        this.loginIsUnique(customerResquest.getLogin());
 
         final Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
 
         if (!optionalCustomer.isPresent())
             throw new DefaultException("Usuário não encontrado.");
 
+        CustomerResponse customerResponse;
+
         Customer customerPersisted = optionalCustomer.get();
+        String oldLogin = customerPersisted.getLogin();
 
         try {
 
-            customerPersisted.setFullName(customer.getFullName());
-            customerPersisted.setPersonType(customer.getPersonType() != null ? customer.getPersonType() : PersonType.F);
-            customerPersisted.setNickName(customer.getNickName());
-            customerPersisted.setBirthDate(customer.getBirthDate());
-            customerPersisted.setCountry(customer.getCountry());
-            customerPersisted.setGender(customer.getGender() != null ? customer.getGender() : Gender.I);
-            customerPersisted.setMotherName(customer.getMotherName());
-            customerPersisted.setFatherName(customer.getFatherName());
-            customerPersisted.setNumberOfChildren(customer.getNumberOfChildren());
-            customerPersisted.setParentId(customer.getParentId());
+            customerPersisted.setFullName(customerResquest.getFullName());
+            customerPersisted.setPersonType(customerResquest.getPersonType() != null ? PersonType.valueOf(
+                    customerResquest.getPersonType()) : PersonType.F);
+            customerPersisted.setNickName(customerResquest.getNickName());
+            customerPersisted.setBirthDate(customerResquest.getBirthDate());
+            customerPersisted.setCountry(customerResquest.getCountry());
+            customerPersisted.setGender(
+                    customerResquest.getGender() != null ? Gender.valueOf(customerResquest.getGender()) : Gender.I);
+            customerPersisted.setLogin(customerResquest.getLogin());
+            customerPersisted.setMotherName(customerResquest.getMotherName());
+            customerPersisted.setFatherName(customerResquest.getFatherName());
+            customerPersisted.setNumberOfChildren(customerResquest.getNumberOfChildren());
+            customerPersisted.setParentId(customerResquest.getParentId());
+            customerPersisted.setUpdated(LocalDateTime.now());
             this.customerRepository.saveAndFlush(customerPersisted);
 
+        } catch (IllegalArgumentException e) {
+            throw new DefaultException("Genero ou PersonType inválido.");
         } catch (Exception e) {
             log.error("Erro ao atualizar customer.");
             throw new DefaultException("Erro ao atualizar customer.");
         }
 
-        credentialService.updateLoginWithCustomer(customerPersisted);
+        customerResponse = this.customerToCustomerResponse(customerPersisted);
 
-        CustomerData customerData = this.customerDto(customerPersisted);
+        credentialService.updateLoginWithCustomer(oldLogin, customerResponse);
 
-        return customerData;
+        return customerResponse;
     }
 
     @Override
-    public CustomerData findByIdOrLogin(String customerId) {
+    public CustomerResponse findByIdOrLogin(String customerId) {
         Helper.checkIfStringIsBlank(customerId, "customerId ou email inválido.");
 
         Optional<Customer> customerById = customerRepository.findById(customerId);
 
         if (customerById.isPresent()) {
-            return this.customerDto(customerById.get());
+            return this.customerToCustomerResponse(customerById.get());
         }
 
         Customer customrByLogin = customerRepository.findByLoginIgnoreCase(customerId);
         if (null != customrByLogin) {
-            return this.customerDto(customrByLogin);
+            return this.customerToCustomerResponse(customrByLogin);
         }
 
         return null;
     }
 
-    private Customer createCustomerHelper(Customer customer) {
-        Customer newCustomer = new Customer();
-        newCustomer.setFullName(customer.getFullName());
-        newCustomer.setPersonType(customer.getPersonType() != null ? customer.getPersonType() : PersonType.F);
-        newCustomer.setNickName(customer.getNickName());
-        newCustomer.setBirthDate(customer.getBirthDate());
-        newCustomer.setCountry(customer.getCountry());
-        newCustomer.setGender(customer.getGender() != null ? customer.getGender() : Gender.I);
-        newCustomer.setMotherName(customer.getMotherName());
-        newCustomer.setFatherName(customer.getFatherName());
-        newCustomer.setLogin(customer.getLogin());
-        newCustomer.setPassword(new BCryptPasswordEncoder().encode(customer.getPassword()));
-        newCustomer.setNumberOfChildren(customer.getNumberOfChildren());
-        newCustomer.setParentId(customer.getParentId());
-        return newCustomer;
+    private Customer createCustomerHelper(CustomerResquest customerResquest) {
+        Customer customer = new Customer();
+
+        try {
+            customer.setFullName(customerResquest.getFullName());
+            customer.setPersonType(customerResquest.getPersonType() != null ?
+                    PersonType.valueOf(customerResquest.getPersonType()) :
+                    PersonType.F);
+            customer.setNickName(customerResquest.getNickName());
+            customer.setBirthDate(customerResquest.getBirthDate());
+            customer.setCountry(customerResquest.getCountry() != null ? customerResquest.getCountry() : "BR");
+            customer.setGender(customerResquest.getGender() != null ? Gender.valueOf(customerResquest.getGender()) :
+                    Gender.I);
+            customer.setMotherName(customerResquest.getMotherName());
+            customer.setFatherName(customerResquest.getFatherName());
+            customer.setLogin(customerResquest.getLogin());
+            customer.setPassword(new BCryptPasswordEncoder().encode(customerResquest.getPassword()));
+            customer.setNumberOfChildren(customerResquest.getNumberOfChildren() != null ?
+                    customerResquest.getNumberOfChildren() : 0);
+            customer.setParentId(customerResquest.getParentId());
+        } catch (IllegalArgumentException e) {
+            throw new DefaultException("Genero ou PersonType inválido.");
+        } catch (Exception e) {
+            throw new DefaultException("Erro ao parsear response.");
+        }
+
+        return customer;
     }
 
-    private CustomerData customerDto(Customer customer) {
-        CustomerData customerData = new CustomerData();
-        customerData.setId(customer.getId());
-        customerData.setFullName(customer.getFullName());
-        customerData.setPersonType(customer.getPersonType());
-        customerData.setNickName(customer.getNickName());
-        customerData.setBirthDate(customer.getBirthDate());
-        customerData.setCountry(customer.getCountry());
-        customerData.setCreated(customer.getCreated());
-        customerData.setGender(customer.getGender());
-        customerData.setMotherName(customer.getMotherName());
-        customerData.setFatherName(customer.getFatherName());
-        customerData.setLogin(customer.getLogin());
-        customerData.setNumberOfChildren(customer.getNumberOfChildren());
-        customerData.setParentId(customer.getParentId());
-        return customerData;
+
+    private CustomerResponse customerToCustomerResponse(Customer customer) {
+        CustomerResponse customerResponse = new CustomerResponse();
+
+        customerResponse.setId(customer.getId());
+        customerResponse.setFullName(customer.getFullName());
+        customerResponse.setPersonType(customer.getPersonType());
+        customerResponse.setNickName(customer.getNickName());
+        customerResponse.setBirthDate(customer.getBirthDate());
+        customerResponse.setCountry(customer.getCountry());
+        customerResponse.setGender(customer.getGender());
+        customerResponse.setMotherName(customer.getMotherName());
+        customerResponse.setFatherName(customer.getFatherName());
+        customerResponse.setLogin(customer.getLogin());
+        customerResponse.setPassword("* * *");
+        customerResponse.setNumberOfChildren(customer.getNumberOfChildren());
+        customerResponse.setParentId(customer.getParentId());
+        customerResponse.setCreated(customer.getCreated());
+        customerResponse.setUpdated(customer.getUpdated());
+
+        return customerResponse;
     }
 
     private boolean loginIsUnique(String login) {

@@ -1,19 +1,10 @@
-package br.com.pvprojects.loja.domain;
+package br.com.pvprojects.loja.domain.response;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -22,66 +13,55 @@ import br.com.pvprojects.loja.util.LocalDateSerializer;
 import br.com.pvprojects.loja.util.enums.Gender;
 import br.com.pvprojects.loja.util.enums.PersonType;
 
-@Entity
-@Table(name = "CUSTOMER")
-public class Customer {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class CustomerResponse implements Serializable {
 
-    public Customer() {
-    }
-
-    @Id
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @GeneratedValue(generator = "uuid2")
-    @Column(name = "ID")
     private String id;
-
-    @Column(name = "FULL_NAME")
     private String fullName;
-
-    @Column(name = "PERSON_TYPE")
-    @Enumerated(EnumType.STRING)
     private PersonType personType;
-
-    @Column(name = "NICKNAME")
     private String nickName;
-
-    @Column(name = "BIRTH_DATE")
     private String birthDate;
-
-    @Column(name = "COUNTRY")
     private String country;
-
-    @Column(name = "CREATED_AT")
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDateTime created;
-
-    @Column(name = "UPDATED_AT")
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDateTime updated;
-
-    @Column(name = "GENDER")
-    @Enumerated(EnumType.STRING)
     private Gender gender;
-
-    @Column(name = "MOTHER_NAME")
     private String motherName;
-
-    @Column(name = "FATHER_NAME")
     private String fatherName;
-
-    @Column(name = "LOGIN", unique = true)
     private String login;
-
-    @Column(name = "PASSWORD")
     private String password;
-
-    @Column(name = "NUMBER_OF_CHILDREN")
     private Integer numberOfChildren;
-
-    @Column(name = "PARENT_ID")
     private String parentId;
+
+    public CustomerResponse() {
+    }
+
+    public CustomerResponse(String id) {
+        this.id = id;
+    }
+
+    public CustomerResponse(String id, String fullName, PersonType personType, String nickName, String birthDate,
+            String country, LocalDateTime created, LocalDateTime updated, Gender gender, String motherName,
+            String fatherName, String login, String password, Integer numberOfChildren, String parentId) {
+        this.id = id;
+        this.fullName = fullName;
+        this.personType = personType;
+        this.nickName = nickName;
+        this.birthDate = birthDate;
+        this.country = country;
+        this.created = created;
+        this.updated = updated;
+        this.gender = gender;
+        this.motherName = motherName;
+        this.fatherName = fatherName;
+        this.login = login;
+        this.password = password;
+        this.numberOfChildren = numberOfChildren;
+        this.parentId = parentId;
+    }
 
     public String getId() {
         return id;
@@ -207,22 +187,22 @@ public class Customer {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Customer customer = (Customer) o;
-        return Objects.equals(id, customer.id) &&
-                Objects.equals(fullName, customer.fullName) &&
-                personType == customer.personType &&
-                Objects.equals(nickName, customer.nickName) &&
-                Objects.equals(birthDate, customer.birthDate) &&
-                Objects.equals(country, customer.country) &&
-                Objects.equals(created, customer.created) &&
-                Objects.equals(updated, customer.updated) &&
-                gender == customer.gender &&
-                Objects.equals(motherName, customer.motherName) &&
-                Objects.equals(fatherName, customer.fatherName) &&
-                Objects.equals(login, customer.login) &&
-                Objects.equals(password, customer.password) &&
-                Objects.equals(numberOfChildren, customer.numberOfChildren) &&
-                Objects.equals(parentId, customer.parentId);
+        CustomerResponse that = (CustomerResponse) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(fullName, that.fullName) &&
+                personType == that.personType &&
+                Objects.equals(nickName, that.nickName) &&
+                Objects.equals(birthDate, that.birthDate) &&
+                Objects.equals(country, that.country) &&
+                Objects.equals(created, that.created) &&
+                Objects.equals(updated, that.updated) &&
+                gender == that.gender &&
+                Objects.equals(motherName, that.motherName) &&
+                Objects.equals(fatherName, that.fatherName) &&
+                Objects.equals(login, that.login) &&
+                Objects.equals(password, that.password) &&
+                Objects.equals(numberOfChildren, that.numberOfChildren) &&
+                Objects.equals(parentId, that.parentId);
     }
 
     @Override
@@ -234,7 +214,7 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer{" +
+        return "CustomerResponse{" +
                 "id='" + id + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", personType=" + personType +
@@ -251,11 +231,5 @@ public class Customer {
                 ", numberOfChildren=" + numberOfChildren +
                 ", parentId='" + parentId + '\'' +
                 '}';
-    }
-
-    @PrePersist
-    public void prePersist() {
-        if (created == null)
-            this.created = LocalDateTime.now();
     }
 }

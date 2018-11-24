@@ -36,18 +36,12 @@ public class Credential {
     @Column(name = "ID")
     private Integer id;
 
-    @NotEmpty(message = "O customerId não pode ser vazio")
-    @NotNull(message = "O customerId não pode ser nulo")
     @Column(name = "CUSTOMERID")
     private String customerId;
 
-    @NotEmpty(message = "O login não pode ser vazio")
-    @NotNull(message = "O login não pode ser nulo")
     @Column(name = "LOGIN")
     private String login;
 
-    @NotEmpty(message = "O password não pode ser vazio")
-    @NotNull(message = "O password não pode ser nulo")
     @Column(name = "PASSWORD")
     private String password;
 
@@ -155,9 +149,8 @@ public class Credential {
 
     @PrePersist
     public void prePersist() {
-        if (created == null) {
+
+        if (created == null)
             this.created = LocalDateTime.now();
-        }
-        updated = LocalDateTime.now();
     }
 }
