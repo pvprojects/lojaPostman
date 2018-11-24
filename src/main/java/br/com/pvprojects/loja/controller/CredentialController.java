@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.pvprojects.loja.domain.data.CredentialData;
+import br.com.pvprojects.loja.domain.response.CredentialResponse;
 import br.com.pvprojects.loja.domain.form.CredentialChangeLogin;
 import br.com.pvprojects.loja.domain.form.CredentialChangeLoginAndPassword;
 import br.com.pvprojects.loja.domain.form.CredentialResetPassword;
@@ -24,11 +24,11 @@ public class CredentialController {
     private CredentialService credentialService;
 
     @GetMapping(path = "/login/{email}")
-    public ResponseEntity<CredentialData> getCredentialByLogin(@PathVariable(name = "email") String email) {
+    public ResponseEntity<CredentialResponse> getCredentialByLogin(@PathVariable(name = "email") String email) {
 
-        CredentialData credentialData = this.credentialService.findByLogin(email);
+        CredentialResponse credentialResponse = this.credentialService.findByLogin(email);
 
-        return new ResponseEntity<>(credentialData, HttpStatus.OK);
+        return new ResponseEntity<>(credentialResponse, HttpStatus.OK);
     }
 
     @PutMapping(path = "/login/{email}")

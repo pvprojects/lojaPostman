@@ -53,7 +53,7 @@ public class CustomerServiceImpl implements CustomerService {
             throw new DefaultException("Erro ao criar customer");
         }
 
-        this.credentialService.create(customer);
+        this.credentialService.createWithCustomer(customer);
 
         customerResponse = this.customerToCustomerResponse(customer);
 

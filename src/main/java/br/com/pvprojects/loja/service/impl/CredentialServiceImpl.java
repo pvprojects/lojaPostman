@@ -17,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.pvprojects.loja.domain.Credential;
 import br.com.pvprojects.loja.domain.Customer;
-import br.com.pvprojects.loja.domain.data.CredentialData;
+import br.com.pvprojects.loja.domain.request.CredentialRequest;
+import br.com.pvprojects.loja.domain.response.CredentialResponse;
+import br.com.pvprojects.loja.domain.response.CustomerResponse;
 import br.com.pvprojects.loja.infra.handle.exceptions.DefaultException;
 import br.com.pvprojects.loja.repository.CredentialRepository;
 import br.com.pvprojects.loja.repository.CustomerRepository;
@@ -37,68 +39,91 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
     private CustomerRepository customerRepository;
 
     @Override
-    public Credential create(Credential credential) {
+    @Transactional
+    public CredentialResponse create(CredentialRequest credentialRequest) {
 
-        Helper.checkIfObjectIsNull(credential, "Informações inválidas.");
-        this.loginIsUnique(credential.getLogin());
+        Helper.checkIfObjectIsNull(credentialRequest, "Informações inválidas.");
+        this.loginIsUnique(credentialRequest.getLogin());
 
-        Credential newCretial = new Credential();
-        newCretial.setCustomerId(credential.getCustomerId());
-        newCretial.setLogin(credential.getPassword());
-        newCretial.setPassword(new BCryptPasswordEncoder().encode(credential.getPassword()));
-        newCretial.setPerfil(Perfil.CLIENTE);
+        Credential cretial = new Credential();
+        CredentialResponse credentialResponse;
 
         try {
-            this.credentialRepository.saveAndFlush(newCretial);
+
+            cretial.setCustomerId(credentialRequest.getCustomerId());
+            cretial.setLogin(credentialRequest.getPassword());
+            cretial.setPassword(new BCryptPasswordEncoder().encode(credentialRequest.getPassword()));
+            cretial.setPerfil(credentialRequest.getPerfil() != null ? Perfil.valueOf(credentialRequest.getPerfil()) :
+                    Perfil.CLIENTE);
+            this.credentialRepository.saveAndFlush(cretial);
+
+        } catch (IllegalArgumentException e) {
+            throw new DefaultException("Perfil inválido.");
         } catch (Exception e) {
             log.error("Erro ao criar credential");
             throw new DefaultException("Erro ao criar credential.");
         }
 
-        return newCretial;
+        credentialResponse = this.credentialToCredentialResponse(cretial);
+
+        return credentialResponse;
+    }
+
+    private CredentialResponse credentialToCredentialResponse(Credential credential) {
+        CredentialResponse credentialResponse = new CredentialResponse();
+
+        credentialResponse.setId(credential.getId());
+        credentialResponse.setCustomerId(credential.getCustomerId());
+        credentialResponse.setLogin(credential.getLogin());
+        credentialResponse.setPassword("* * *");
+        credentialResponse.setPerfil(credential.getPerfil());
+        credentialResponse.setCreated(credential.getCreated());
+        credentialResponse.setUpdated(credential.getUpdated());
+        return credentialResponse;
     }
 
     @Override
-    public Credential create(Customer customer) {
+    @Transactional
+    public Credential createWithCustomer(Customer customer) {
 
         Helper.checkIfObjectIsNull(customer, "Informações inválidas.");
         this.loginIsUnique(customer.getLogin());
 
-        Credential newCretial = new Credential();
-        newCretial.setCustomerId(customer.getId());
-        newCretial.setLogin(customer.getLogin());
-        newCretial.setPassword(customer.getPassword());
-        newCretial.setPerfil(Perfil.CLIENTE);
+        Credential cretial = new Credential();
+        cretial.setCustomerId(customer.getId());
+        cretial.setLogin(customer.getLogin());
+        cretial.setPassword(customer.getPassword());
+        cretial.setPerfil(Perfil.CLIENTE);
 
         try {
-            this.credentialRepository.saveAndFlush(newCretial);
+            this.credentialRepository.saveAndFlush(cretial);
         } catch (Exception e) {
             log.error("Erro ao criar credential");
             throw new DefaultException("Erro ao criar credential.");
         }
 
-        return newCretial;
+        return cretial;
     }
 
     @Override
-    public CredentialData findByLogin(String login) {
+    public CredentialResponse findByLogin(String login) {
         Credential credential = this.credentialRepository.findByLoginIgnoreCase(login);
         Helper.checkIfObjectIsNull(credential, "Credential não encontrada.");
 
-        CredentialData credentialData = new CredentialData();
-        credentialData.setId(credential.getId());
-        credentialData.setCustomerId(credential.getCustomerId());
-        credentialData.setLogin(credential.getLogin());
-        credentialData.setPassword("***");
-        credentialData.setPerfil(credential.getPerfil().name());
-        credentialData.setCreated(credential.getCreated());
-        credentialData.setUpdated(credential.getUpdated());
+        CredentialResponse credentialResponse = new CredentialResponse();
+        credentialResponse.setId(credential.getId());
+        credentialResponse.setCustomerId(credential.getCustomerId());
+        credentialResponse.setLogin(credential.getLogin());
+        credentialResponse.setPassword("* * *");
+        credentialResponse.setPerfil(credential.getPerfil());
+        credentialResponse.setCreated(credential.getCreated());
+        credentialResponse.setUpdated(credential.getUpdated());
 
-        return credentialData;
+        return credentialResponse;
     }
 
     @Override
-    public void updateLoginWithCustomer(String oldLogin,Customer customer) {
+    public void updateLoginWithCustomer(String oldLogin, Customer customer) {
         Helper.checkIfObjectIsNull(customer, "Informações inválidas.");
         this.loginIsUnique(customer.getLogin());
 
@@ -189,6 +214,7 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
     private boolean loginIsUnique(String login) {
         Optional<Credential> credentialptional = Optional.ofNullable(
                 this.credentialRepository.findByLoginIgnoreCase(login));
+
         if (credentialptional.isPresent())
             throw new DefaultException("O login informado já existe.");
 

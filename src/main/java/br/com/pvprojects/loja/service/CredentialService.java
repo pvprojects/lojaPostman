@@ -2,17 +2,19 @@ package br.com.pvprojects.loja.service;
 
 import br.com.pvprojects.loja.domain.Credential;
 import br.com.pvprojects.loja.domain.Customer;
-import br.com.pvprojects.loja.domain.data.CredentialData;
+import br.com.pvprojects.loja.domain.request.CredentialRequest;
+import br.com.pvprojects.loja.domain.response.CredentialResponse;
+import br.com.pvprojects.loja.domain.response.CustomerResponse;
 
 public interface CredentialService {
 
-    Credential create(Credential credential);
+    CredentialResponse create(CredentialRequest credentialRequest);
 
-    Credential create(Customer customer);
+    Credential createWithCustomer(Customer customer);
 
-    CredentialData findByLogin(String login);
+    CredentialResponse findByLogin(String login);
 
-    void updateLoginWithCustomer(String oldLogin,Customer customer);
+    void updateLoginWithCustomer(String oldLogin, Customer customer);
 
     void changeLogin(String newLogin, String oldLogin);
 
