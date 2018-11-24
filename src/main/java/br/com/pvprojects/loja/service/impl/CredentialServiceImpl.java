@@ -123,15 +123,16 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
     }
 
     @Override
-    public void updateLoginWithCustomer(String oldLogin, Customer customer) {
-        Helper.checkIfObjectIsNull(customer, "Informações inválidas.");
-        this.loginIsUnique(customer.getLogin());
+    @Transactional
+    public void updateLoginWithCustomer(String oldLogin, CustomerResponse customerResponse) {
+        Helper.checkIfObjectIsNull(customerResponse, "Informações inválidas.");
+        this.loginIsUnique(customerResponse.getLogin());
 
         Credential credential = this.credentialRepository.findByLoginIgnoreCase(oldLogin);
         Helper.checkIfObjectIsNull(credential, "Credential não encontrada.");
 
         try {
-            credential.setLogin(customer.getLogin());
+            credential.setLogin(customerResponse.getLogin());
 
             credentialRepository.saveAndFlush(credential);
         } catch (Exception e) {
@@ -179,11 +180,12 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
         Helper.checkIfObjectIsNull(credential, "Credential não encontrada.");
 
         try {
+            String passwordEncoder = new BCryptPasswordEncoder().encode(newPassord);
 
-            credential.setPassword(new BCryptPasswordEncoder().encode(newPassord));
+            credential.setPassword(passwordEncoder);
             this.credentialRepository.saveAndFlush(credential);
 
-            customer.setPassword(new BCryptPasswordEncoder().encode(newPassord));
+            customer.setPassword(passwordEncoder);
             this.customerRepository.saveAndFlush(customer);
         } catch (Exception e) {
             log.error("Erro ao atualizar a senha.");

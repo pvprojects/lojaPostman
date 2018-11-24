@@ -103,9 +103,9 @@ public class CustomerServiceImpl implements CustomerService {
             throw new DefaultException("Erro ao atualizar customer.");
         }
 
-        credentialService.updateLoginWithCustomer(oldLogin, customerPersisted);
-
         customerResponse = this.customerToCustomerResponse(customerPersisted);
+
+        credentialService.updateLoginWithCustomer(oldLogin, customerResponse);
 
         return customerResponse;
     }
