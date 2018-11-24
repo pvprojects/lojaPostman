@@ -2,6 +2,8 @@ package br.com.pvprojects.loja.service.impl;
 
 import java.time.LocalDateTime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,8 @@ import br.com.pvprojects.loja.service.AddressService;
 
 @Service
 public class AddressServiceImpl implements AddressService {
+
+    private static final Logger log = LoggerFactory.getLogger(AddressServiceImpl.class);
 
     @Autowired
     private AddressRepository addressRepository;

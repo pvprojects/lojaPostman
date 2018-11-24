@@ -13,10 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -45,9 +41,6 @@ public class Document {
     @Enumerated(EnumType.STRING)
     private Type type;
 
-    @NotEmpty(message = "O número não pode ser vazio")
-    @NotNull(message = "O número não pode ser nulo")
-    @Length(min = 5, message = "O número não pode ter menos de 5 caracteres")
     @Column(name = "NUMBER")
     private String number;
 
@@ -141,9 +134,7 @@ public class Document {
 
     @PrePersist
     public void prePersist() {
-        if (created == null) {
+        if (created == null)
             this.created = LocalDateTime.now();
-        }
-        updated = LocalDateTime.now();
     }
 }

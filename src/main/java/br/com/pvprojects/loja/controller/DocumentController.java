@@ -1,5 +1,6 @@
 package br.com.pvprojects.loja.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -17,8 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.pvprojects.loja.domain.Document;
-import br.com.pvprojects.loja.domain.data.DocumentsData;
 import br.com.pvprojects.loja.domain.form.DocumentChange;
+import br.com.pvprojects.loja.domain.request.DocumentRequest;
+import br.com.pvprojects.loja.domain.response.DocumentsResponse;
 import br.com.pvprojects.loja.service.DocumentService;
 import br.com.pvprojects.loja.util.enums.Type;
 
@@ -30,29 +32,29 @@ public class DocumentController {
     private DocumentService documentService;
 
     @PostMapping(path = "/create")
-    public ResponseEntity<DocumentsData> createDocument(@RequestBody @Valid Document document,
+    public ResponseEntity<DocumentsResponse> createDocument(@RequestBody @Valid DocumentRequest documentRequest,
             @QueryParam("login") String login) {
 
-        Document newDocument = this.documentService.create(document, login);
-        DocumentsData documentsData = new DocumentsData(newDocument.getId());
+        DocumentsResponse documentsResponse = this.documentService.create(documentRequest, login);
 
-        return new ResponseEntity<>(documentsData, HttpStatus.CREATED);
+        return new ResponseEntity<>(new DocumentsResponse(documentsResponse.getType(), documentsResponse.getNumber()),
+                HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{email}")
-    public ResponseEntity<List<Document>> getAllDocuments(@PathVariable(name = "email") String email) {
+    public ResponseEntity<List<DocumentsResponse>> getAllDocuments(@PathVariable(name = "email") String email) {
 
-        List<Document> list = this.documentService.findAllDocuments(email);
+        List<DocumentsResponse> list = this.documentService.findAllDocuments(email);
 
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping(path = "/find/cpf/{number}")
-    public ResponseEntity<DocumentsData> getDocument(@PathVariable(name = "number") String number) {
+    public ResponseEntity<DocumentsResponse> getDocument(@PathVariable(name = "number") String number) {
 
-        DocumentsData documentsData = this.documentService.find(Type.CPF, number);
+        DocumentsResponse documentsResponse = this.documentService.find(Type.CPF, number);
 
-        return new ResponseEntity<>(documentsData, HttpStatus.OK);
+        return new ResponseEntity<>(documentsResponse, HttpStatus.OK);
     }
 
     @PutMapping(path = "/change/{type}/{number}")

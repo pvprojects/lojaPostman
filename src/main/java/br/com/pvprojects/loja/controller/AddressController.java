@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.pvprojects.loja.domain.Address;
 import br.com.pvprojects.loja.domain.data.AddressData;
-import br.com.pvprojects.loja.domain.data.DocumentsData;
 import br.com.pvprojects.loja.service.AddressService;
 
 @RestController
