@@ -98,11 +98,11 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
     }
 
     @Override
-    public void updateLoginWithCustomer(Customer customer) {
+    public void updateLoginWithCustomer(String oldLogin,Customer customer) {
         Helper.checkIfObjectIsNull(customer, "Informações inválidas.");
         this.loginIsUnique(customer.getLogin());
 
-        Credential credential = this.credentialRepository.findByLoginIgnoreCase(customer.getLogin());
+        Credential credential = this.credentialRepository.findByLoginIgnoreCase(oldLogin);
         Helper.checkIfObjectIsNull(credential, "Credential não encontrada.");
 
         try {

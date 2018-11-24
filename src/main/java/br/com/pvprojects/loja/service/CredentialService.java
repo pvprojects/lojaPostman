@@ -12,7 +12,7 @@ public interface CredentialService {
 
     CredentialData findByLogin(String login);
 
-    void updateLoginWithCustomer(Customer customer);
+    void updateLoginWithCustomer(String oldLogin,Customer customer);
 
     void changeLogin(String newLogin, String oldLogin);
 

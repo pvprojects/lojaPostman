@@ -1,62 +1,68 @@
-package br.com.pvprojects.loja.domain.data;
+package br.com.pvprojects.loja.domain.request;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
-import br.com.pvprojects.loja.util.enums.Gender;
-import br.com.pvprojects.loja.util.enums.PersonType;
+import org.hibernate.validator.constraints.Length;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class CustomerData implements Serializable {
+public class CustomerResquest implements Serializable {
 
-    private String id;
+    @NotBlank(message = "O nome não pode ser vazio ou nulo")
+    @Length(min = 3, message = "O nome não pode ter menos de 3 caracteres")
     private String fullName;
-    private PersonType personType;
+
+    private String personType;
+
+    @NotBlank(message = "O nickName não pode ser vazio ou nulo")
+    @Length(min = 3, message = "O nickName não pode ter menos de 3 caracteres")
     private String nickName;
+
+    @NotBlank(message = "O birthDate não pode ser vazio ou nulo")
     private String birthDate;
+
     private String country;
-    private LocalDateTime created;
-    private Gender gender;
+
+    private String gender;
+
+    @NotBlank(message = "O motherName não pode ser vazio ou nulo")
     private String motherName;
+
     private String fatherName;
+
+    @NotBlank(message = "O email não pode ser vazio ou nulo")
+    @Email(message = "O email informado é inválido.")
     private String login;
+
+    @NotBlank(message = "O password não pode ser vazio ou nulo")
+    @Pattern(regexp = "\\d{6}$", message = "Password inválido. O password deve conter 6 dígitos.")
+    private String password;
+
     private Integer numberOfChildren;
+
     private String parentId;
 
-    public CustomerData() {
+    public CustomerResquest() {
     }
 
-    public CustomerData(String id) {
-        this.id = id;
-    }
-
-    public CustomerData(String id, String fullName, PersonType personType, String nickName, String birthDate,
-            String country, LocalDateTime created, Gender gender, String motherName, String fatherName,
-            String login, Integer numberOfChildren, String parentId) {
-        this.id = id;
+    public CustomerResquest(String fullName, String personType, String nickName, String birthDate, String country,
+            String gender, String motherName, String fatherName, String login, String password,
+            Integer numberOfChildren, String parentId) {
         this.fullName = fullName;
         this.personType = personType;
         this.nickName = nickName;
         this.birthDate = birthDate;
         this.country = country;
-        this.created = created;
         this.gender = gender;
         this.motherName = motherName;
         this.fatherName = fatherName;
         this.login = login;
+        this.password = password;
         this.numberOfChildren = numberOfChildren;
         this.parentId = parentId;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getFullName() {
@@ -67,11 +73,11 @@ public class CustomerData implements Serializable {
         this.fullName = fullName;
     }
 
-    public PersonType getPersonType() {
+    public String getPersonType() {
         return personType;
     }
 
-    public void setPersonType(PersonType personType) {
+    public void setPersonType(String personType) {
         this.personType = personType;
     }
 
@@ -99,19 +105,11 @@ public class CustomerData implements Serializable {
         this.country = country;
     }
 
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
-
-    public Gender getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(Gender gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
@@ -139,6 +137,14 @@ public class CustomerData implements Serializable {
         this.login = login;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public Integer getNumberOfChildren() {
         return numberOfChildren;
     }
@@ -159,43 +165,40 @@ public class CustomerData implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CustomerData that = (CustomerData) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(fullName, that.fullName) &&
-                personType == that.personType &&
+        CustomerResquest that = (CustomerResquest) o;
+        return Objects.equals(fullName, that.fullName) &&
+                Objects.equals(personType, that.personType) &&
                 Objects.equals(nickName, that.nickName) &&
                 Objects.equals(birthDate, that.birthDate) &&
                 Objects.equals(country, that.country) &&
-                Objects.equals(created, that.created) &&
-                gender == that.gender &&
+                Objects.equals(gender, that.gender) &&
                 Objects.equals(motherName, that.motherName) &&
                 Objects.equals(fatherName, that.fatherName) &&
                 Objects.equals(login, that.login) &&
+                Objects.equals(password, that.password) &&
                 Objects.equals(numberOfChildren, that.numberOfChildren) &&
                 Objects.equals(parentId, that.parentId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, fullName, personType, nickName, birthDate, country, created, gender, motherName,
-                fatherName,
-                login, numberOfChildren, parentId);
+        return Objects.hash(fullName, personType, nickName, birthDate, country, gender, motherName, fatherName, login,
+                password, numberOfChildren, parentId);
     }
 
     @Override
     public String toString() {
-        return "CustomerData{" +
-                "id='" + id + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", personType=" + personType +
+        return "CustomerResquest{" +
+                "fullName='" + fullName + '\'' +
+                ", personType='" + personType + '\'' +
                 ", nickName='" + nickName + '\'' +
                 ", birthDate='" + birthDate + '\'' +
                 ", country='" + country + '\'' +
-                ", created=" + created +
-                ", gender=" + gender +
+                ", gender='" + gender + '\'' +
                 ", motherName='" + motherName + '\'' +
                 ", fatherName='" + fatherName + '\'' +
                 ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
                 ", numberOfChildren=" + numberOfChildren +
                 ", parentId='" + parentId + '\'' +
                 '}';

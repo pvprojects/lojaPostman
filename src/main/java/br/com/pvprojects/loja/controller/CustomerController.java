@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.pvprojects.loja.domain.Customer;
-import br.com.pvprojects.loja.domain.data.CustomerData;
+import br.com.pvprojects.loja.domain.request.CustomerResquest;
+import br.com.pvprojects.loja.domain.response.CustomerResponse;
 import br.com.pvprojects.loja.service.CustomerService;
 import br.com.pvprojects.loja.util.Helper;
 
@@ -26,29 +26,28 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PostMapping
-    public ResponseEntity<CustomerData> createCustomer(@RequestBody @Valid Customer customer) {
+    public ResponseEntity<CustomerResponse> createCustomer(@RequestBody @Valid CustomerResquest customerResquest) {
 
-        Customer newCustomer = this.customerService.create(customer);
-        CustomerData customerData = new CustomerData(newCustomer.getId());
+        CustomerResponse customerResponse = this.customerService.create(customerResquest);
 
-        return new ResponseEntity<>(customerData, HttpStatus.CREATED);
+        return new ResponseEntity<>(new CustomerResponse(customerResponse.getId()), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{customerId}")
-    public ResponseEntity<CustomerData> getCustomerById(@PathVariable(name = "customerId") String customerId) {
+    public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable(name = "customerId") String customerId) {
 
-        CustomerData customerData = this.customerService.findByIdOrLogin(customerId);
-        Helper.checkIfObjectIsNull(customerData, "Usuário não encontrado.");
+        CustomerResponse customerResponse = this.customerService.findByIdOrLogin(customerId);
+        Helper.checkIfObjectIsNull(customerResponse, "Usuário não encontrado.");
 
-        return new ResponseEntity<>(customerData, HttpStatus.OK);
+        return new ResponseEntity<>(customerResponse, HttpStatus.OK);
     }
 
     @PutMapping(path = "/{customerId}")
-    private ResponseEntity<CustomerData> updateCustomer(@PathVariable(name = "customerId") String customerId,
-            @RequestBody Customer customer) {
+    private ResponseEntity<CustomerResponse> updateCustomer(@PathVariable(name = "customerId") String customerId,
+            @RequestBody @Valid CustomerResquest customerResquest) {
 
-        CustomerData customerData = this.customerService.updateCustomer(customerId, customer);
+        CustomerResponse customerResponse = this.customerService.updateCustomer(customerId, customerResquest);
 
-        return new ResponseEntity<>(customerData, HttpStatus.OK);
+        return new ResponseEntity<>(customerResponse, HttpStatus.OK);
     }
 }

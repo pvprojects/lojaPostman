@@ -1,13 +1,13 @@
 package br.com.pvprojects.loja.service;
 
-import br.com.pvprojects.loja.domain.Customer;
-import br.com.pvprojects.loja.domain.data.CustomerData;
+import br.com.pvprojects.loja.domain.request.CustomerResquest;
+import br.com.pvprojects.loja.domain.response.CustomerResponse;
 
 public interface CustomerService {
 
-    Customer create(Customer customer);
+    CustomerResponse create(CustomerResquest customerResquest);
 
-    CustomerData updateCustomer(String customerId, Customer customer);
+    CustomerResponse updateCustomer(String customerId, CustomerResquest customerResquest);
 
-    CustomerData findByIdOrLogin(String customerId);
+    CustomerResponse findByIdOrLogin(String customerId);
 }
