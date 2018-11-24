@@ -1,12 +1,18 @@
-package br.com.pvprojects.loja.domain.data;
+package br.com.pvprojects.loja.domain.response;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import br.com.pvprojects.loja.util.LocalDateDeserializer;
+import br.com.pvprojects.loja.util.LocalDateSerializer;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AddressData {
+public class AddressResponse implements Serializable {
 
     private Integer id;
     private String name;
@@ -19,13 +25,17 @@ public class AddressData {
     private String state;
     private String country;
     private String customerId;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDateTime created;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDateTime updated;
 
-    public AddressData() {
+    public AddressResponse() {
     }
 
-    public AddressData(Integer id, String name, String zipCode, String number, String complement, String street,
+    public AddressResponse(Integer id, String name, String zipCode, String number, String complement, String street,
             String district, String city, String state, String country, String customerId, LocalDateTime created,
             LocalDateTime updated) {
         this.id = id;
@@ -43,7 +53,7 @@ public class AddressData {
         this.updated = updated;
     }
 
-    public AddressData(Integer id) {
+    public AddressResponse(Integer id) {
         this.id = id;
     }
 
@@ -155,7 +165,7 @@ public class AddressData {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AddressData that = (AddressData) o;
+        AddressResponse that = (AddressResponse) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(zipCode, that.zipCode) &&
@@ -179,7 +189,7 @@ public class AddressData {
 
     @Override
     public String toString() {
-        return "AddressData{" +
+        return "AddressResponse{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", zipCode='" + zipCode + '\'' +

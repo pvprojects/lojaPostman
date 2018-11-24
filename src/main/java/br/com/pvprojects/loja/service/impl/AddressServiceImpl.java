@@ -1,7 +1,5 @@
 package br.com.pvprojects.loja.service.impl;
 
-import java.time.LocalDateTime;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.pvprojects.loja.domain.Address;
 import br.com.pvprojects.loja.domain.Customer;
+import br.com.pvprojects.loja.domain.request.AddressRequest;
+import br.com.pvprojects.loja.domain.response.AddressResponse;
+import br.com.pvprojects.loja.infra.handle.exceptions.DefaultException;
 import br.com.pvprojects.loja.repository.AddressRepository;
 import br.com.pvprojects.loja.repository.CustomerRepository;
 import br.com.pvprojects.loja.service.AddressService;
+import br.com.pvprojects.loja.util.Helper;
 
 @Service
 public class AddressServiceImpl implements AddressService {
@@ -27,24 +29,54 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional
-    public Address create(Address address, String login) {
+    public AddressResponse create(AddressRequest addressRequest, String login) {
+        Helper.checkIfObjectIsNull(addressRequest, "Informações inválidas.");
+        Helper.checkIfStringIsBlank(login, "customerId inválido.");
 
         Customer customer = customerRepository.findByLoginIgnoreCase(login);
 
-        Address newAddress = new Address();
-        newAddress.setCountry(address.getCountry());
-        newAddress.setCity(address.getCity());
-        newAddress.setComplement(address.getComplement());
-        newAddress.setCreated(LocalDateTime.now());
-        newAddress.setUpdated(LocalDateTime.now());
-        newAddress.setCustomerId(customer.getId());
-        newAddress.setName(address.getName());
-        newAddress.setNumber(address.getNumber());
-        newAddress.setState(address.getState());
-        newAddress.setStreet(address.getStreet());
-        newAddress.setZipCode(address.getZipCode());
-        addressRepository.saveAndFlush(newAddress);
+        Address address = new Address();
+        AddressResponse addressResponse;
 
-        return newAddress;
+        try {
+
+            address.setName(addressRequest.getName());
+            address.setZipCode(addressRequest.getZipCode());
+            address.setNumber(addressRequest.getNumber());
+            address.setStreet(addressRequest.getStreet());
+            address.setDistrict(addressRequest.getDistrict());
+            address.setCity(addressRequest.getCity());
+            address.setState(addressRequest.getState());
+            address.setComplement(addressRequest.getComplement());
+            address.setCountry(addressRequest.getCountry() != null ? addressRequest.getCountry() : "BR");
+            address.setCustomerId(customer.getId());
+
+            addressRepository.saveAndFlush(address);
+        } catch (Exception e) {
+            throw new DefaultException("Erro ao salvar endereço.");
+        }
+
+        addressResponse = this.addressToAddressResponse(address);
+
+        return addressResponse;
+    }
+
+    private AddressResponse addressToAddressResponse(Address address) {
+        AddressResponse addressResponse = new AddressResponse();
+
+        addressResponse.setId(address.getId());
+        addressResponse.setName(address.getName());
+        addressResponse.setZipCode(address.getZipCode());
+        addressResponse.setNumber(address.getNumber());
+        addressResponse.setStreet(address.getStreet());
+        addressResponse.setDistrict(address.getDistrict());
+        addressResponse.setCity(address.getCity());
+        address.setState(address.getState());
+        addressResponse.setComplement(address.getComplement());
+        addressResponse.setCountry(address.getCountry());
+        addressResponse.setCustomerId(address.getCustomerId());
+        addressResponse.setCreated(address.getCreated());
+        addressResponse.setUpdated(address.getUpdated());
+        return addressResponse;
     }
 }

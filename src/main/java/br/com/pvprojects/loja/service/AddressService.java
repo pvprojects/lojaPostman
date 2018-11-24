@@ -1,8 +1,9 @@
 package br.com.pvprojects.loja.service;
 
-import br.com.pvprojects.loja.domain.Address;
+import br.com.pvprojects.loja.domain.request.AddressRequest;
+import br.com.pvprojects.loja.domain.response.AddressResponse;
 
 public interface AddressService {
 
-    Address create(Address address, String login);
+    AddressResponse create(AddressRequest addressRequest, String login);
 }
