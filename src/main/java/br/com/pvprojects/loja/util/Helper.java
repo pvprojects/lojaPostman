@@ -16,7 +16,7 @@ import br.com.pvprojects.loja.infra.handle.exceptions.DefaultException;
 
 public class Helper {
 
-    private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssSSS");
+    private SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     public String uuidGenerator() {
         UUID randomUUID = UUID.randomUUID();

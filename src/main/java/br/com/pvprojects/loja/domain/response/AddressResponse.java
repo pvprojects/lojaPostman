@@ -8,8 +8,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import br.com.pvprojects.loja.util.LocalDateDeserializer;
-import br.com.pvprojects.loja.util.LocalDateSerializer;
+import br.com.pvprojects.loja.util.dateHelper.LocalDateDeserializer;
+import br.com.pvprojects.loja.util.dateHelper.LocalDateSerializer;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AddressResponse implements Serializable {
