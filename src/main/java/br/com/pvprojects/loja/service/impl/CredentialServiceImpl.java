@@ -1,5 +1,7 @@
 package br.com.pvprojects.loja.service.impl;
 
+import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_REQUEST;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +44,7 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
     @Transactional
     public CredentialResponse create(CredentialRequest credentialRequest) {
 
-        Helper.checkIfObjectIsNull(credentialRequest, "Informações inválidas.");
+        Helper.checkIfObjectIsNull(credentialRequest, INVALID_REQUEST);
         this.loginIsUnique(credentialRequest.getLogin());
 
         Credential cretial = new Credential();
@@ -86,7 +88,7 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
     @Transactional
     public Credential createWithCustomer(Customer customer) {
 
-        Helper.checkIfObjectIsNull(customer, "Informações inválidas.");
+        Helper.checkIfObjectIsNull(customer, INVALID_REQUEST);
         this.loginIsUnique(customer.getLogin());
 
         Credential cretial = new Credential();
@@ -125,7 +127,7 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
     @Override
     @Transactional
     public void updateLoginWithCustomer(String oldLogin, CustomerResponse customerResponse) {
-        Helper.checkIfObjectIsNull(customerResponse, "Informações inválidas.");
+        Helper.checkIfObjectIsNull(customerResponse, INVALID_REQUEST);
         this.loginIsUnique(customerResponse.getLogin());
 
         Credential credential = this.credentialRepository.findByLoginIgnoreCase(oldLogin);

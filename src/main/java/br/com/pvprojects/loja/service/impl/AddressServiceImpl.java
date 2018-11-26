@@ -1,5 +1,7 @@
 package br.com.pvprojects.loja.service.impl;
 
+import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_REQUEST;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +32,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public AddressResponse create(AddressRequest addressRequest, String login) {
-        Helper.checkIfObjectIsNull(addressRequest, "Informações inválidas.");
+        Helper.checkIfObjectIsNull(addressRequest, INVALID_REQUEST);
         Helper.checkIfStringIsBlank(login, "customerId inválido.");
 
         Customer customer = customerRepository.findByLoginIgnoreCase(login);

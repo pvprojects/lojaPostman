@@ -1,5 +1,7 @@
 package br.com.pvprojects.loja.service.impl;
 
+import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_REQUEST;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +39,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     @Transactional
     public DocumentsResponse create(DocumentRequest documentRequest, String login) {
-        Helper.checkIfObjectIsNull(documentRequest, "Informações inválidas.");
+        Helper.checkIfObjectIsNull(documentRequest, INVALID_REQUEST);
         Helper.checkIfStringIsBlank(login, "customerId inválido.");
 
         Customer customer = customerRepository.findByLoginIgnoreCase(login);
@@ -96,7 +98,7 @@ public class DocumentServiceImpl implements DocumentService {
         Helper.checkIfStringIsBlank(type, "Tipo do documento inválido.");
         Helper.checkIfStringIsBlank(number, "Número do documento inválido.");
         Helper.checkIfStringIsBlank(login, "Login inválido.");
-        Helper.checkIfObjectIsNull(documentChange, "Informações inválidas.");
+        Helper.checkIfObjectIsNull(documentChange, INVALID_REQUEST);
 
         validateType(type);
 
