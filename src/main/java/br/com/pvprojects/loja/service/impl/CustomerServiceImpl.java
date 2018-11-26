@@ -1,5 +1,7 @@
 package br.com.pvprojects.loja.service.impl;
 
+import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_REQUEST;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -39,7 +41,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     public CustomerResponse create(CustomerResquest customerResquest) {
 
-        Helper.checkIfObjectIsNull(customerResquest, "Informações inválidas.");
+        Helper.checkIfObjectIsNull(customerResquest, INVALID_REQUEST);
         this.loginIsUnique(customerResquest.getLogin());
 
         CustomerResponse customerResponse;
@@ -64,7 +66,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     public CustomerResponse updateCustomer(String customerId, CustomerResquest customerResquest) {
 
-        Helper.checkIfObjectIsNull(customerResquest, "Informações inválidas.");
+        Helper.checkIfObjectIsNull(customerResquest, INVALID_REQUEST);
         Helper.checkIfStringIsBlank(customerId, "customerId inválido.");
         this.loginIsUnique(customerResquest.getLogin());
 

@@ -43,7 +43,7 @@ public class CustomerController {
     }
 
     @PutMapping(path = "/{customerId}")
-    private ResponseEntity<CustomerResponse> updateCustomer(@PathVariable(name = "customerId") String customerId,
+    public ResponseEntity<CustomerResponse> updateCustomer(@PathVariable(name = "customerId") String customerId,
             @RequestBody @Valid CustomerResquest customerResquest) {
 
         CustomerResponse customerResponse = this.customerService.updateCustomer(customerId, customerResquest);

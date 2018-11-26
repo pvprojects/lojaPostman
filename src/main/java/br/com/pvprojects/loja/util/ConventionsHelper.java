@@ -2,6 +2,7 @@ package br.com.pvprojects.loja.util;
 
 public class ConventionsHelper {
 
+    public static final String INVALID_REQUEST = "Algo em sua requisição esta incorreto ou faltando.";
     public static final String CUSTOMER_NOT_FOUND = "Cliente não encontrado.";
     public static final String CHANGE_EMAIL_LOGIN_NOT_FOUND = "O e-mail informado não pertence a um cliente.";
     public static final String PASSWORD_PATTERN = "O campo deve conter 6 caracteres numéricos.";
