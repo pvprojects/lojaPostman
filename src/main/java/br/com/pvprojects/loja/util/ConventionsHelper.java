@@ -12,6 +12,9 @@ public class ConventionsHelper {
     public static final String INVALID_CPF_ERROR_MESSAGE = "CPF inválido.";
     public static final String CPF_NOT_PROVIDED_ERROR_MESSAGE = "CPF não informado.";
 
+    //API
+    public static final String INTEGRATION_ERROR = "Erro inesperado conectando-se ao serviço do subsistema Mock";
+
     //Address
     public static final String CAMPO_ESTADO_INVALIDO = "O nome do estado é inválido.";
     public static final String CAMPO_ESTADO_NAO_INFORMADO = "O nome do estado não foi informado.";
