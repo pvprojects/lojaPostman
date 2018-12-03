@@ -180,7 +180,8 @@ public class CustomerServiceImpl implements CustomerService {
     private boolean loginIsUnique(String login) {
         Customer customerOptional = this.customerRepository.findByLoginIgnoreCase(login);
 
-        Helper.checkIfObjectIsNull(customerOptional, "O login informado já existe.");
+        if (null != customerOptional)
+            Helper.checkIfObjectIsNull(customerOptional, "O login informado já existe.");
 
         return true;
     }
