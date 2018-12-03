@@ -10,5 +10,7 @@ public interface CredentialRepository extends JpaRepository<Credential, Integer>
 
     Credential findByLoginIgnoreCase(String login);
 
+    Credential findByLogin(String login);
+
     Credential findByCustomerId(String customerId);
 }

@@ -5,15 +5,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.pvprojects.loja.domain.response.CredentialResponse;
 import br.com.pvprojects.loja.domain.form.CredentialChangeLogin;
 import br.com.pvprojects.loja.domain.form.CredentialChangeLoginAndPassword;
 import br.com.pvprojects.loja.domain.form.CredentialResetPassword;
+import br.com.pvprojects.loja.domain.form.PasswordRequest;
+import br.com.pvprojects.loja.domain.response.CredentialResponse;
 import br.com.pvprojects.loja.service.CredentialService;
 
 @RestController
@@ -55,6 +57,13 @@ public class CredentialController {
 
         this.credentialService.changeLogingAndPassword(credentialChangeLoginAndPassword.getNewLogin(),
                 credentialChangeLoginAndPassword.getNewPassword(), email);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/login/recovery/password")
+    public ResponseEntity<Void> recoveryPassword(@RequestBody PasswordRequest passwordRequest) {
+        this.credentialService.recoveryPassword(passwordRequest.getLogin());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

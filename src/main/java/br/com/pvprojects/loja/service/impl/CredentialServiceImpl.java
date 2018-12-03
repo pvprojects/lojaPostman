@@ -3,7 +3,9 @@ package br.com.pvprojects.loja.service.impl;
 import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_REQUEST;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -23,6 +25,7 @@ import br.com.pvprojects.loja.domain.request.CredentialRequest;
 import br.com.pvprojects.loja.domain.response.CredentialResponse;
 import br.com.pvprojects.loja.domain.response.CustomerResponse;
 import br.com.pvprojects.loja.infra.handle.exceptions.DefaultException;
+import br.com.pvprojects.loja.infra.mail.SendEmail;
 import br.com.pvprojects.loja.repository.CredentialRepository;
 import br.com.pvprojects.loja.repository.CustomerRepository;
 import br.com.pvprojects.loja.service.CredentialService;
@@ -39,6 +42,9 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private SendEmail sendEmail;
 
     @Override
     @Transactional
@@ -91,20 +97,20 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
         Helper.checkIfObjectIsNull(customer, INVALID_REQUEST);
         this.loginIsUnique(customer.getLogin());
 
-        Credential cretial = new Credential();
-        cretial.setCustomerId(customer.getId());
-        cretial.setLogin(customer.getLogin());
-        cretial.setPassword(customer.getPassword());
-        cretial.setPerfil(Perfil.CLIENTE);
+        Credential credential = new Credential();
+        credential.setCustomerId(customer.getId());
+        credential.setLogin(customer.getLogin());
+        credential.setPassword(customer.getPassword());
+        credential.setPerfil(Perfil.CLIENTE);
 
         try {
-            this.credentialRepository.saveAndFlush(cretial);
+            this.credentialRepository.saveAndFlush(credential);
         } catch (Exception e) {
             log.error("Erro ao criar credential");
             throw new DefaultException("Erro ao criar credential.");
         }
 
-        return cretial;
+        return credential;
     }
 
     @Override
@@ -200,6 +206,30 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
     public void changeLogingAndPassword(String newLogin, String newPassord, String login) {
         this.changeLogin(newLogin, login);
         this.changePassword(newPassord, newLogin);
+    }
+
+    @Override
+    public void recoveryPassword(String login) {
+        Helper.checkIfStringIsBlank(login, "Usuário inválido.");
+        login = login.toLowerCase().trim();
+
+        Credential credential = credentialRepository.findByLogin(login);
+        Helper.checkIfObjectIsNull(credential, "Credential não encontrada.");
+
+        String senha = credential.getPassword();
+
+        String template = "email/recuperar-senha";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("senha", senha);
+
+        try {
+            this.sendEmail.enviarEmail("eng.paulovieiraa@gmail.com", Arrays.asList(credential.getLogin()),
+                    "Recuperação de senha", template, map);
+        } catch (Exception e) {
+            log.error("Erro ao recuperar a senha.");
+            throw new DefaultException("Erro ao recuperar a senha.");
+        }
     }
 
     public UserDetails loadUserByUsername(String login) {

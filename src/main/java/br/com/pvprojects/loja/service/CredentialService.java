@@ -21,4 +21,6 @@ public interface CredentialService {
     void changePassword(String newPassord, String login);
 
     void changeLogingAndPassword(String newLogin, String newPassord, String login);
+
+    void recoveryPassword(String login);
 }
