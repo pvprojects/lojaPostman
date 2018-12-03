@@ -3,7 +3,6 @@ package br.com.pvprojects.loja.service.impl;
 import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_REQUEST;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,14 +69,10 @@ public class CustomerServiceImpl implements CustomerService {
         Helper.checkIfStringIsBlank(customerId, "customerId inválido.");
         this.loginIsUnique(customerResquest.getLogin());
 
-        final Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
+        final Customer customerPersisted = customerRepository.findOne(customerId);
 
-        if (!optionalCustomer.isPresent())
-            throw new DefaultException("Usuário não encontrado.");
+        Helper.checkIfObjectIsNull(customerPersisted, "Usuário não encontrado.");
 
-        CustomerResponse customerResponse;
-
-        Customer customerPersisted = optionalCustomer.get();
         String oldLogin = customerPersisted.getLogin();
 
         try {
@@ -105,7 +100,7 @@ public class CustomerServiceImpl implements CustomerService {
             throw new DefaultException("Erro ao atualizar customer.");
         }
 
-        customerResponse = this.customerToCustomerResponse(customerPersisted);
+        CustomerResponse customerResponse = this.customerToCustomerResponse(customerPersisted);
 
         credentialService.updateLoginWithCustomer(oldLogin, customerResponse);
 
@@ -116,10 +111,10 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerResponse findByIdOrLogin(String customerId) {
         Helper.checkIfStringIsBlank(customerId, "customerId ou email inválido.");
 
-        Optional<Customer> customerById = customerRepository.findById(customerId);
+        Customer customerById = customerRepository.findOne(customerId);
 
-        if (customerById.isPresent()) {
-            return this.customerToCustomerResponse(customerById.get());
+        if (null != customerById && !customerById.getId().isEmpty()) {
+            return this.customerToCustomerResponse(customerById);
         }
 
         Customer customrByLogin = customerRepository.findByLoginIgnoreCase(customerId);
@@ -183,10 +178,9 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     private boolean loginIsUnique(String login) {
-        Optional<Customer> customerOptional = Optional.ofNullable(this.customerRepository.findByLoginIgnoreCase(login));
+        Customer customerOptional = this.customerRepository.findByLoginIgnoreCase(login);
 
-        if (customerOptional.isPresent())
-            throw new DefaultException("O login informado já existe.");
+        Helper.checkIfObjectIsNull(customerOptional, "O login informado já existe.");
 
         return true;
     }

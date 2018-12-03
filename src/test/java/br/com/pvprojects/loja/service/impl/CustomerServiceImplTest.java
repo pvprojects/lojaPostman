@@ -1,11 +1,10 @@
 package br.com.pvprojects.loja.service.impl;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,15 +30,14 @@ public class CustomerServiceImplTest extends BaseServiceTests {
     private CredentialService credentialService;
 
     private String customerId;
-    private Optional<Customer> customerOptional;
+    private Customer customer;
 
     @Before
     public void setUp() throws Exception {
 
         customerId = "ab3de519-20a1-4e40-a997-e55b010d4a79";
 
-        customerOptional = Optional.of(new Customer());
-        Customer customer = customerOptional.get();
+        customer = new Customer();
         customer.setId(customerId);
         customer.setFullName("Paulo Vieira");
         customer.setNickName("Mestre");
@@ -57,7 +55,7 @@ public class CustomerServiceImplTest extends BaseServiceTests {
 
     @Test
     public void findById() {
-        when(customerRepository.findById(anyString())).thenReturn(customerOptional);
+        when(customerRepository.findOne(anyString())).thenReturn(customer);
 
         CustomerResponse customerResponse = customerService.findByIdOrLogin(customerId);
         assertNotNull(customerResponse);
