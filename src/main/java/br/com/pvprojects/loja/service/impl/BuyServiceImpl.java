@@ -1,5 +1,8 @@
 package br.com.pvprojects.loja.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +54,24 @@ public class BuyServiceImpl implements BuyService {
         HistoricResponse historicResponse = this.historicToHistoricResponse(historic);
 
         return historicResponse;
+    }
+
+    @Override
+    public List<HistoricResponse> getHistoricByLogin(String login) {
+        Helper.checkIfStringIsBlank(login, "Email inválido.");
+
+        List<Historic> list = historicRepository.findByLoginIgnoreCase(login);
+        Helper.checkIfCollectionIsNullOrEmpty(list, "O usuário não possui nenhuma compra salva.");
+        List<HistoricResponse> responseList = new ArrayList<>();
+
+        list.forEach(item -> {
+
+            HistoricResponse historicResponse = this.historicToHistoricResponse(item);
+
+            responseList.add(historicResponse);
+        });
+
+        return responseList;
     }
 
     @Override

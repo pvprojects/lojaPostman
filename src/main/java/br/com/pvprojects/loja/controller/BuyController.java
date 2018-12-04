@@ -1,15 +1,19 @@
 package br.com.pvprojects.loja.controller;
 
+import java.util.List;
+
 import javax.ws.rs.QueryParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.pvprojects.loja.domain.response.HistoricResponse;
 import br.com.pvprojects.loja.integration.request.MockRequestData;
 import br.com.pvprojects.loja.integration.response.MockResponseData;
 import br.com.pvprojects.loja.service.BuyService;
@@ -28,5 +32,13 @@ public class BuyController {
         MockResponseData responseData = buyService.buy(login, number, requestData);
 
         return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
+    @GetMapping("/buy/purchases")
+    public ResponseEntity<List<HistoricResponse>> getHistoric(@QueryParam("login") String login) {
+
+        List<HistoricResponse> list = buyService.getHistoricByLogin(login);
+
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }
