@@ -35,7 +35,7 @@ public class AddressServiceImpl implements AddressService {
         Helper.checkIfObjectIsNull(addressRequest, INVALID_REQUEST);
         Helper.checkIfStringIsBlank(login, "customerId inválido.");
 
-        Customer customer = customerRepository.findByLoginIgnoreCase(login);
+        Customer customer = customerRepository.findByLogin(login.toLowerCase());
 
         Address address = new Address();
         AddressResponse addressResponse;

@@ -1,9 +1,7 @@
 package br.com.pvprojects.loja.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
 import javax.ws.rs.QueryParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.pvprojects.loja.domain.Document;
 import br.com.pvprojects.loja.domain.form.DocumentChange;
 import br.com.pvprojects.loja.domain.request.DocumentRequest;
 import br.com.pvprojects.loja.domain.response.DocumentsResponse;
@@ -32,7 +29,7 @@ public class DocumentController {
     private DocumentService documentService;
 
     @PostMapping(path = "/create")
-    public ResponseEntity<DocumentsResponse> createDocument(@RequestBody @Valid DocumentRequest documentRequest,
+    public ResponseEntity<DocumentsResponse> createDocument(@RequestBody DocumentRequest documentRequest,
             @QueryParam("login") String login) {
 
         DocumentsResponse documentsResponse = this.documentService.create(documentRequest, login);
