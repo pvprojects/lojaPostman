@@ -117,7 +117,7 @@ public class CustomerServiceImpl implements CustomerService {
             return this.customerToCustomerResponse(customerById);
         }
 
-        Customer customrByLogin = customerRepository.findByLoginIgnoreCase(customerId);
+        Customer customrByLogin = customerRepository.findByLogin(customerId.toLowerCase());
         if (null != customrByLogin) {
             return this.customerToCustomerResponse(customrByLogin);
         }
@@ -178,7 +178,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     private boolean loginIsUnique(String login) {
-        Customer customerOptional = this.customerRepository.findByLoginIgnoreCase(login);
+        Customer customerOptional = this.customerRepository.findByLogin(login.toLowerCase());
 
         if (null != customerOptional)
             Helper.checkIfObjectIsNull(customerOptional, "O login informado já existe.");

@@ -157,7 +157,7 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
 
         this.loginIsUnique(newLogin);
 
-        Customer customer = this.customerRepository.findByLoginIgnoreCase(oldLogin);
+        Customer customer = this.customerRepository.findByLogin(oldLogin.toLowerCase());
         Helper.checkIfObjectIsNull(customer, "Customer não encontrado.");
 
         Credential credential = this.credentialRepository.findByLoginIgnoreCase(oldLogin);
@@ -181,7 +181,7 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
         Helper.checkIfStringIsBlank(login, "Usuário inválido.");
         Helper.checkIfStringIsBlank(newPassord, "Nova senha inválido.");
 
-        Customer customer = this.customerRepository.findByLoginIgnoreCase(login);
+        Customer customer = this.customerRepository.findByLogin(login.toLowerCase());
         Helper.checkIfObjectIsNull(customer, "Customer não encontrado.");
 
         Credential credential = this.credentialRepository.findByLoginIgnoreCase(login);

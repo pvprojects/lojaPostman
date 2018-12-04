@@ -32,6 +32,15 @@ public class Helper {
         return curRequest.getHeader(keyHeader);
     }
 
+    public static void checkIfStringIsOnlyNumbers(String number, String error) {
+
+        checkIfStringIsBlank(number, "Numero inválidos");
+
+        if (!number.matches("[0-9]+")) {
+            throw new DefaultException(error);
+        }
+    }
+
     public static void checkIfStringIsBlank(String string, String error) {
         if (null == string || string.isEmpty())
             throw new DefaultException(error);

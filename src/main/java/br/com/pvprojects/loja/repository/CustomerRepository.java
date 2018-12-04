@@ -10,7 +10,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
 
     Customer findByFullNameIgnoreCase(String fullName);
 
-    Customer findByLoginIgnoreCase (String login);
+    Customer findByLogin (String login);
 
     Customer findByParentId(String customerIdFromFatherOrMother);
 }

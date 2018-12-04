@@ -1,6 +1,5 @@
 package br.com.pvprojects.loja.controller;
 
-import javax.validation.Valid;
 import javax.ws.rs.QueryParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ public class AddressController {
     private AddressService addressService;
 
     @PostMapping(path = "/create")
-    public ResponseEntity<AddressResponse> createAddress(@RequestBody @Valid AddressRequest addressRequest,
+    public ResponseEntity<AddressResponse> createAddress(@RequestBody AddressRequest addressRequest,
             @QueryParam("login") String login) {
 
         AddressResponse address = this.addressService.create(addressRequest, login);

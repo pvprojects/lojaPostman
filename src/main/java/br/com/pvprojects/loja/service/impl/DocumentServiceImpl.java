@@ -42,7 +42,7 @@ public class DocumentServiceImpl implements DocumentService {
         Helper.checkIfObjectIsNull(documentRequest, INVALID_REQUEST);
         Helper.checkIfStringIsBlank(login, "customerId inválido.");
 
-        Customer customer = customerRepository.findByLoginIgnoreCase(login);
+        Customer customer = customerRepository.findByLogin(login.toLowerCase());
         Helper.checkIfObjectIsNull(customer, "Usuário não encontrado.");
 
         this.validateDocumentByPerson(documentRequest);
@@ -67,18 +67,17 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public List<DocumentsResponse> findAllDocuments(String login) {
-        List<Document> list = this.documentRepository.findAll();
+        Customer customer = customerRepository.findByLogin(login.toLowerCase());
+        Helper.checkIfObjectIsNull(customer,"Usuário não encontrado.");
+
+        List<Document> list = this.documentRepository.findByCustomerId(customer.getId());
+        Helper.checkIfCollectionIsNullOrEmpty(list, "O usuário não possui nenhum documento salvo.");
 
         List<DocumentsResponse> docs = new ArrayList<>();
 
-        list.forEach(p -> {
-            for (Document doc : list) {
-                DocumentsResponse documentsResponse = this.documentToDocumentResponse(doc);
-
-                if (docs.isEmpty() || docs.size() < list.size())
-                    docs.add(documentsResponse);
-
-            }
+        list.forEach(doc -> {
+            DocumentsResponse documentResponse = this.documentToDocumentResponse(doc);
+            docs.add(documentResponse);
         });
 
         return docs;
@@ -107,7 +106,7 @@ public class DocumentServiceImpl implements DocumentService {
         if (type2.equals(Type.CPF))
             Validator.verifyIfCpfIsValid(number);
 
-        Customer customer = customerRepository.findByLoginIgnoreCase(login);
+        Customer customer = customerRepository.findByLogin(login.toLowerCase());
         Helper.checkIfObjectIsNull(customer, "Customer não encontrado.");
 
         Document document = documentRepository.findByCustomerIdAndTypeAndNumber(customer.getId(), type2, number);
