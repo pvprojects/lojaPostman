@@ -38,8 +38,8 @@ public class DocumentController {
                 HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "/{email}")
-    public ResponseEntity<List<DocumentsResponse>> getAllDocuments(@PathVariable(name = "email") String email) {
+    @GetMapping
+    public ResponseEntity<List<DocumentsResponse>> getAllDocuments(@QueryParam("email") String email) {
 
         List<DocumentsResponse> list = this.documentService.findAllDocuments(email);
 
