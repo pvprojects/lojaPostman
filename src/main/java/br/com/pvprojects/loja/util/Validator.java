@@ -4,30 +4,10 @@ import java.util.InputMismatchException;
 
 public class Validator {
 
-    public static boolean validator(String string) {
-        if (null != string && !string.isEmpty())
-            return true;
-
-        return false;
-    }
-
     public static String clean(String string) {
         return string.trim().replace(" ", "").replace(",", "")
                 .replace(".", "").replace("-", "");
     }
-
-
-    public static String zipCodeValidator(String zipCode) {
-        validator(zipCode);
-
-        String zipCodeClean = clean(zipCode);
-
-        if (zipCodeClean.matches("\\d{8}"))
-            return zipCodeClean;
-
-        return null;
-    }
-
 
     public static boolean verifyIfCpfIsValid(final String CPF) {
         if (simpleCheckNotValid(CPF))

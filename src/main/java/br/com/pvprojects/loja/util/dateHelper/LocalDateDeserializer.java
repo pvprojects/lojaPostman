@@ -14,9 +14,8 @@ public class LocalDateDeserializer extends JsonDeserializer<LocalDateTime> {
 
         String data = jp.readValueAs(String.class);
 
-        if (data != null && !data.isEmpty()) {
+        if (data != null && !data.isEmpty())
             return LocalDateTime.parse(data);
-        }
 
         return null;
     }

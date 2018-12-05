@@ -1,5 +1,7 @@
 package br.com.pvprojects.loja.service.impl;
 
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_CUSTOMERID_INVALIDO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_SALVAR_ENDERECO;
 import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_REQUEST;
 
 import org.slf4j.Logger;
@@ -33,7 +35,7 @@ public class AddressServiceImpl implements AddressService {
     @Transactional
     public AddressResponse create(AddressRequest addressRequest, String login) {
         Helper.checkIfObjectIsNull(addressRequest, INVALID_REQUEST);
-        Helper.checkIfStringIsBlank(login, "customerId inválido.");
+        Helper.checkIfStringIsBlank(login, CAMPO_CUSTOMERID_INVALIDO);
 
         Customer customer = customerRepository.findByLogin(login.toLowerCase());
 
@@ -55,7 +57,8 @@ public class AddressServiceImpl implements AddressService {
 
             addressRepository.saveAndFlush(address);
         } catch (Exception e) {
-            throw new DefaultException("Erro ao salvar endereço.");
+            log.error(ERRO_SALVAR_ENDERECO);
+            throw new DefaultException(ERRO_SALVAR_ENDERECO);
         }
 
         addressResponse = this.addressToAddressResponse(address);

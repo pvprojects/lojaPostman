@@ -1,5 +1,7 @@
 package br.com.pvprojects.loja.infra.mail;
 
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_ENVIAR_EMAIL;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -26,7 +28,6 @@ public class SendEmail {
     public void enviarEmail(String remetente, List<String> destinatarios, String assunto, String template,
             Map<String, Object> variaveis) {
 
-
         Context context = new Context(new Locale("pt-BR"));
 
         variaveis.entrySet().forEach(e -> context.setVariable(e.getKey(), e.getValue()));
@@ -48,8 +49,7 @@ public class SendEmail {
 
             this.javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            throw new RuntimeException("Erro ao enviar email");
+            throw new RuntimeException(ERRO_ENVIAR_EMAIL);
         }
-
     }
 }

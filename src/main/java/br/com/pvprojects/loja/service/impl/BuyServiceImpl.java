@@ -1,5 +1,11 @@
 package br.com.pvprojects.loja.service.impl;
 
+import static br.com.pvprojects.loja.util.ConventionsHelper.COMPRA_REALIZADA;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_INVALID_NUMBER_EXCEPTION;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_SALVAR_HISTORICO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_USUARIO_SEM_HISTORICO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_LOGIN;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.pvprojects.loja.domain.Historic;
+import br.com.pvprojects.loja.domain.History;
 import br.com.pvprojects.loja.domain.response.CustomerResponse;
-import br.com.pvprojects.loja.domain.response.HistoricResponse;
+import br.com.pvprojects.loja.domain.response.HistoryResponse;
 import br.com.pvprojects.loja.infra.handle.exceptions.DefaultException;
 import br.com.pvprojects.loja.integration.MockApiService;
 import br.com.pvprojects.loja.integration.request.MockRequestData;
 import br.com.pvprojects.loja.integration.response.MockResponseData;
-import br.com.pvprojects.loja.repository.HistoricRepository;
+import br.com.pvprojects.loja.repository.HistoryRepository;
 import br.com.pvprojects.loja.service.BuyService;
 import br.com.pvprojects.loja.util.Helper;
 
@@ -30,45 +36,43 @@ public class BuyServiceImpl implements BuyService {
     private CustomerServiceImpl customerService;
 
     @Autowired
-    private HistoricRepository historicRepository;
+    private HistoryRepository historyRepository;
 
     private static final Logger log = LoggerFactory.getLogger(BuyServiceImpl.class);
 
     @Override
     @Transactional
-    public HistoricResponse saveHistoric(String customerId, String login, MockRequestData requestData) {
-        Historic historic = new Historic();
+    public HistoryResponse saveHistory(String customerId, String login, MockRequestData requestData) {
+        History history = new History();
 
         try {
-            historic.setCustomerId(customerId);
-            historic.setLogin(login);
-            historic.setItem(requestData.getItem());
-            historic.setPrice(requestData.getPrice());
-            historicRepository.saveAndFlush(historic);
+            history.setCustomerId(customerId);
+            history.setLogin(login);
+            history.setItem(requestData.getItem());
+            history.setPrice(requestData.getPrice());
 
+            historyRepository.saveAndFlush(history);
         } catch (Exception e) {
-            log.error("Erro ao criar o historico");
-            throw new DefaultException("Erro ao criar historico de compra.");
+            log.error(ERRO_SALVAR_HISTORICO);
+            throw new DefaultException(ERRO_SALVAR_HISTORICO);
         }
 
-        HistoricResponse historicResponse = this.historicToHistoricResponse(historic);
-
-        return historicResponse;
+        return this.historyToHistoryResponse(history);
     }
 
     @Override
-    public List<HistoricResponse> getHistoricByLogin(String login) {
-        Helper.checkIfStringIsBlank(login, "Email inválido.");
+    public List<HistoryResponse> getHistoryByLogin(String login) {
+        Helper.checkIfStringIsBlank(login, INVALID_LOGIN);
 
-        List<Historic> list = historicRepository.findByLoginIgnoreCase(login);
-        Helper.checkIfCollectionIsNullOrEmpty(list, "O usuário não possui nenhuma compra salva.");
-        List<HistoricResponse> responseList = new ArrayList<>();
+        List<History> list = historyRepository.findByLoginIgnoreCase(login);
+        Helper.checkIfCollectionIsNullOrEmpty(list, ERRO_USUARIO_SEM_HISTORICO);
+        List<HistoryResponse> responseList = new ArrayList<>();
 
         list.forEach(item -> {
 
-            HistoricResponse historicResponse = this.historicToHistoricResponse(item);
+            HistoryResponse historyResponse = this.historyToHistoryResponse(item);
 
-            responseList.add(historicResponse);
+            responseList.add(historyResponse);
         });
 
         return responseList;
@@ -76,26 +80,27 @@ public class BuyServiceImpl implements BuyService {
 
     @Override
     public MockResponseData buy(String login, String number, MockRequestData requeestData) {
-        Helper.checkIfStringIsOnlyNumbers(number, "Dado não valido.");
+        Helper.checkIfStringIsOnlyNumbers(number, ERRO_INVALID_NUMBER_EXCEPTION);
 
         MockResponseData responseData = mockApiService.responseBuy(number, requeestData);
 
         if (null != responseData) {
-            log.info("Item comprado");
+            log.info(COMPRA_REALIZADA);
+
             CustomerResponse customerResponse = customerService.findByIdOrLogin(login);
-            this.saveHistoric(customerResponse.getId(), customerResponse.getLogin(), requeestData);
+            this.saveHistory(customerResponse.getId(), customerResponse.getLogin(), requeestData);
         }
 
         return responseData;
     }
 
-    private HistoricResponse historicToHistoricResponse(Historic historic) {
-        HistoricResponse historicResponse = new HistoricResponse();
+    private HistoryResponse historyToHistoryResponse(History history) {
+        HistoryResponse historyResponse = new HistoryResponse();
 
-        historicResponse.setCustomerId(historic.getCustomerId());
-        historicResponse.setItem(historic.getItem());
-        historicResponse.setPrice(historic.getPrice());
-        historicResponse.setCreated(historic.getCreated());
-        return historicResponse;
+        historyResponse.setCustomerId(history.getCustomerId());
+        historyResponse.setItem(history.getItem());
+        historyResponse.setPrice(history.getPrice());
+        historyResponse.setCreated(history.getCreated());
+        return historyResponse;
     }
 }

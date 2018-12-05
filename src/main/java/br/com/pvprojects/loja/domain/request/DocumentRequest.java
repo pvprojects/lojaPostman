@@ -1,5 +1,9 @@
 package br.com.pvprojects.loja.domain.request;
 
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_NUMERO_DOCUMENTO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_NUMERO_DOCUMENTO_SIZE;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_TIPO_DOCUMENTO;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -11,11 +15,11 @@ public class DocumentRequest implements Serializable {
 
     private String customerId;
 
-    @NotBlank(message = "O tipo do documento não pode ser vazio ou nulo")
+    @NotBlank(message = CAMPO_TIPO_DOCUMENTO)
     private String type;
 
-    @Length(min = 5, message = "O número não pode ter menos de 5 caracteres")
-    @NotBlank(message = "O número do documento não pode ser vazio ou nulo")
+    @Length(min = 5, message = CAMPO_NUMERO_DOCUMENTO_SIZE)
+    @NotBlank(message = CAMPO_NUMERO_DOCUMENTO)
     private String number;
 
     public DocumentRequest() {

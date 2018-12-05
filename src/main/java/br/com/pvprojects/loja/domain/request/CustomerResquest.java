@@ -1,5 +1,16 @@
 package br.com.pvprojects.loja.domain.request;
 
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_DATA_ANIVERSARIO_NAO_INFORMADO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_EMAIL_INVALIDO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_EMAIL_NAO_INFORMADO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_NICK_NAME;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_NICK_NAME_SIZE;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_NOME;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_NOME_MAE_NAO_INFORMADO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_NOME_SIZE;
+import static br.com.pvprojects.loja.util.ConventionsHelper.EMPTY_NULL_PASSWORD;
+import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_PASSWORD_SIZE;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -11,34 +22,34 @@ import org.hibernate.validator.constraints.Length;
 
 public class CustomerResquest implements Serializable {
 
-    @NotBlank(message = "O nome não pode ser vazio ou nulo")
-    @Length(min = 3, message = "O nome não pode ter menos de 3 caracteres")
+    @NotBlank(message = CAMPO_NOME)
+    @Length(min = 3, message = CAMPO_NOME_SIZE)
     private String fullName;
 
     private String personType;
 
-    @NotBlank(message = "O nickName não pode ser vazio ou nulo")
-    @Length(min = 3, message = "O nickName não pode ter menos de 3 caracteres")
+    @NotBlank(message = CAMPO_NICK_NAME)
+    @Length(min = 3, message = CAMPO_NICK_NAME_SIZE)
     private String nickName;
 
-    @NotBlank(message = "O birthDate não pode ser vazio ou nulo")
+    @NotBlank(message = CAMPO_DATA_ANIVERSARIO_NAO_INFORMADO)
     private String birthDate;
 
     private String country;
 
     private String gender;
 
-    @NotBlank(message = "O motherName não pode ser vazio ou nulo")
+    @NotBlank(message = CAMPO_NOME_MAE_NAO_INFORMADO)
     private String motherName;
 
     private String fatherName;
 
-    @NotBlank(message = "O email não pode ser vazio ou nulo")
-    @Email(message = "O email informado é inválido.")
+    @NotBlank(message = CAMPO_EMAIL_NAO_INFORMADO)
+    @Email(message = CAMPO_EMAIL_INVALIDO)
     private String login;
 
-    @NotBlank(message = "O password não pode ser vazio ou nulo")
-    @Pattern(regexp = "\\d{6}$", message = "Password inválido. O password deve conter 6 dígitos.")
+    @NotBlank(message = EMPTY_NULL_PASSWORD)
+    @Pattern(regexp = "\\d{6}$", message = INVALID_PASSWORD_SIZE)
     private String password;
 
     private Integer numberOfChildren;

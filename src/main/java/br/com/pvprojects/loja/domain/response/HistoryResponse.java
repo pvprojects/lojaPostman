@@ -12,7 +12,7 @@ import br.com.pvprojects.loja.util.dateHelper.LocalDateDeserializer;
 import br.com.pvprojects.loja.util.dateHelper.LocalDateSerializer;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class HistoricResponse implements Serializable {
+public class HistoryResponse implements Serializable {
 
     private String customerId;
 
@@ -24,10 +24,10 @@ public class HistoricResponse implements Serializable {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDateTime created;
 
-    public HistoricResponse() {
+    public HistoryResponse() {
     }
 
-    public HistoricResponse(String customerId, String item, String price, LocalDateTime created) {
+    public HistoryResponse(String customerId, String item, String price, LocalDateTime created) {
         this.customerId = customerId;
         this.item = item;
         this.price = price;
@@ -70,7 +70,7 @@ public class HistoricResponse implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        HistoricResponse that = (HistoricResponse) o;
+        HistoryResponse that = (HistoryResponse) o;
         return Objects.equals(customerId, that.customerId) &&
                 Objects.equals(item, that.item) &&
                 Objects.equals(price, that.price) &&
@@ -84,7 +84,7 @@ public class HistoricResponse implements Serializable {
 
     @Override
     public String toString() {
-        return "HistoricResponse{" +
+        return "HistoryResponse{" +
                 "customerId='" + customerId + '\'' +
                 ", item='" + item + '\'' +
                 ", price='" + price + '\'' +

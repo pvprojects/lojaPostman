@@ -1,6 +1,21 @@
 package br.com.pvprojects.loja.service.impl;
 
+import static br.com.pvprojects.loja.util.ConventionsHelper.AUTH_ERROR;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_EMAIL_INVALIDO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_NOVO_EMAIL_INVALIDO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_NOVO_PASSWORD_INVALIDO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CREDENTIAL_NOT_FOUND;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CUSTOMER_NOT_FOUND;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_ATUALIZAR_CREDENTIAL;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_ATUALIZAR_LOGIN;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_ATUALIZAR_PASSWORD;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_CREDENTIAL_NAO_ENCONTRADA;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_CRIAR_CREDENTIAL;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_RECUPERAR_PASSWORD;
+import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_PERFIL;
 import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_REQUEST;
+import static br.com.pvprojects.loja.util.ConventionsHelper.LOGIN_UNIQUE;
+import static br.com.pvprojects.loja.util.Helper.createPasswordByBCrypt;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,7 +30,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,16 +74,16 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
 
             cretial.setCustomerId(credentialRequest.getCustomerId());
             cretial.setLogin(credentialRequest.getPassword());
-            cretial.setPassword(new BCryptPasswordEncoder().encode(credentialRequest.getPassword()));
+            cretial.setPassword(createPasswordByBCrypt(credentialRequest.getPassword()));
             cretial.setPerfil(credentialRequest.getPerfil() != null ? Perfil.valueOf(credentialRequest.getPerfil()) :
                     Perfil.CLIENTE);
             this.credentialRepository.saveAndFlush(cretial);
 
         } catch (IllegalArgumentException e) {
-            throw new DefaultException("Perfil inválido.");
+            throw new DefaultException(INVALID_PERFIL);
         } catch (Exception e) {
-            log.error("Erro ao criar credential");
-            throw new DefaultException("Erro ao criar credential.");
+            log.error(ERRO_CRIAR_CREDENTIAL);
+            throw new DefaultException(ERRO_CRIAR_CREDENTIAL);
         }
 
         credentialResponse = this.credentialToCredentialResponse(cretial);
@@ -106,8 +120,8 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
         try {
             this.credentialRepository.saveAndFlush(credential);
         } catch (Exception e) {
-            log.error("Erro ao criar credential");
-            throw new DefaultException("Erro ao criar credential.");
+            log.error(ERRO_CRIAR_CREDENTIAL);
+            throw new DefaultException(ERRO_CRIAR_CREDENTIAL);
         }
 
         return credential;
@@ -116,7 +130,7 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
     @Override
     public CredentialResponse findByLogin(String login) {
         Credential credential = this.credentialRepository.findByLoginIgnoreCase(login);
-        Helper.checkIfObjectIsNull(credential, "Credential não encontrada.");
+        Helper.checkIfObjectIsNull(credential, ERRO_CREDENTIAL_NAO_ENCONTRADA);
 
         CredentialResponse credentialResponse = new CredentialResponse();
         credentialResponse.setId(credential.getId());
@@ -137,31 +151,31 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
         this.loginIsUnique(customerResponse.getLogin());
 
         Credential credential = this.credentialRepository.findByLoginIgnoreCase(oldLogin);
-        Helper.checkIfObjectIsNull(credential, "Credential não encontrada.");
+        Helper.checkIfObjectIsNull(credential, ERRO_CREDENTIAL_NAO_ENCONTRADA);
 
         try {
             credential.setLogin(customerResponse.getLogin());
 
             credentialRepository.saveAndFlush(credential);
         } catch (Exception e) {
-            log.error("Erro ao atualizar a credential");
-            throw new DefaultException("Erro ao atualizar a credential.");
+            log.error(ERRO_ATUALIZAR_CREDENTIAL);
+            throw new DefaultException(ERRO_ATUALIZAR_CREDENTIAL);
         }
     }
 
     @Override
     @Transactional
     public void changeLogin(String newLogin, String oldLogin) {
-        Helper.checkIfStringIsBlank(oldLogin, "Usuário inválido.");
-        Helper.checkIfStringIsBlank(newLogin, "Novo login inválido.");
+        Helper.checkIfStringIsBlank(oldLogin, CAMPO_EMAIL_INVALIDO);
+        Helper.checkIfStringIsBlank(newLogin, CAMPO_NOVO_EMAIL_INVALIDO);
 
         this.loginIsUnique(newLogin);
 
         Customer customer = this.customerRepository.findByLogin(oldLogin.toLowerCase());
-        Helper.checkIfObjectIsNull(customer, "Customer não encontrado.");
+        Helper.checkIfObjectIsNull(customer, CUSTOMER_NOT_FOUND);
 
         Credential credential = this.credentialRepository.findByLoginIgnoreCase(oldLogin);
-        Helper.checkIfObjectIsNull(credential, "Credential não encontrada.");
+        Helper.checkIfObjectIsNull(credential, CREDENTIAL_NOT_FOUND);
 
         try {
             customer.setLogin(newLogin);
@@ -170,25 +184,25 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
             credential.setLogin(newLogin);
             this.credentialRepository.saveAndFlush(credential);
         } catch (Exception e) {
-            log.error("Erro ao atualizar o login.");
-            throw new DefaultException("Erro ao atualizar o login.");
+            log.error(ERRO_ATUALIZAR_LOGIN);
+            throw new DefaultException(ERRO_ATUALIZAR_LOGIN);
         }
     }
 
     @Override
     @Transactional
     public void changePassword(String newPassord, String login) {
-        Helper.checkIfStringIsBlank(login, "Usuário inválido.");
-        Helper.checkIfStringIsBlank(newPassord, "Nova senha inválido.");
+        Helper.checkIfStringIsBlank(login, CAMPO_EMAIL_INVALIDO);
+        Helper.checkIfStringIsBlank(newPassord, CAMPO_NOVO_PASSWORD_INVALIDO);
 
         Customer customer = this.customerRepository.findByLogin(login.toLowerCase());
-        Helper.checkIfObjectIsNull(customer, "Customer não encontrado.");
+        Helper.checkIfObjectIsNull(customer, CUSTOMER_NOT_FOUND);
 
         Credential credential = this.credentialRepository.findByLoginIgnoreCase(login);
-        Helper.checkIfObjectIsNull(credential, "Credential não encontrada.");
+        Helper.checkIfObjectIsNull(credential, CREDENTIAL_NOT_FOUND);
 
         try {
-            String passwordEncoder = new BCryptPasswordEncoder().encode(newPassord);
+            String passwordEncoder = createPasswordByBCrypt(newPassord);
 
             credential.setPassword(passwordEncoder);
             this.credentialRepository.saveAndFlush(credential);
@@ -196,8 +210,8 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
             customer.setPassword(passwordEncoder);
             this.customerRepository.saveAndFlush(customer);
         } catch (Exception e) {
-            log.error("Erro ao atualizar a senha.");
-            throw new DefaultException("Erro ao atualizar a senha.");
+            log.error(ERRO_ATUALIZAR_PASSWORD);
+            throw new DefaultException(ERRO_ATUALIZAR_PASSWORD);
         }
     }
 
@@ -210,11 +224,11 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
 
     @Override
     public void recoveryPassword(String login) {
-        Helper.checkIfStringIsBlank(login, "Usuário inválido.");
+        Helper.checkIfStringIsBlank(login, CAMPO_EMAIL_INVALIDO);
         login = login.toLowerCase().trim();
 
         Credential credential = credentialRepository.findByLogin(login);
-        Helper.checkIfObjectIsNull(credential, "Credential não encontrada.");
+        Helper.checkIfObjectIsNull(credential, CREDENTIAL_NOT_FOUND);
 
         String senha = credential.getPassword();
 
@@ -227,15 +241,15 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
             this.sendEmail.enviarEmail("eng.paulovieiraa@gmail.com", Arrays.asList(credential.getLogin()),
                     "Recuperação de senha", template, map);
         } catch (Exception e) {
-            log.error("Erro ao recuperar a senha.");
-            throw new DefaultException("Erro ao recuperar a senha.");
+            log.error(ERRO_RECUPERAR_PASSWORD);
+            throw new DefaultException(ERRO_RECUPERAR_PASSWORD);
         }
     }
 
     public UserDetails loadUserByUsername(String login) {
         Credential credential = this.credentialRepository.findByLoginIgnoreCase(login);
         if (null == credential) {
-            throw new UsernameNotFoundException("Invalid username or password.");
+            throw new UsernameNotFoundException(AUTH_ERROR);
         }
         return new org.springframework.security.core.userdetails.User(credential.getLogin(), credential.getPassword(),
                 getAuthority(credential));
@@ -250,7 +264,7 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
                 this.credentialRepository.findByLoginIgnoreCase(login));
 
         if (credentialptional.isPresent())
-            throw new DefaultException("O login informado já existe.");
+            throw new DefaultException(LOGIN_UNIQUE);
 
         return true;
     }

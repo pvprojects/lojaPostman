@@ -1,5 +1,7 @@
 package br.com.pvprojects.loja.domain.form;
 
+import static br.com.pvprojects.loja.util.ConventionsHelper.EMPTY_NULL_PASSWORD;
+
 import java.util.Objects;
 
 import javax.validation.constraints.NotBlank;
@@ -9,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CredentialResetPassword {
 
-    @NotBlank(message = "O password não pode ser vazio ou nulo")
+    @NotBlank(message = EMPTY_NULL_PASSWORD)
     private String password;
 
     public CredentialResetPassword() {

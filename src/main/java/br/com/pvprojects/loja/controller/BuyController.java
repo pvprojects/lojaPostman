@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.pvprojects.loja.domain.response.HistoricResponse;
+import br.com.pvprojects.loja.domain.response.HistoryResponse;
 import br.com.pvprojects.loja.integration.request.MockRequestData;
 import br.com.pvprojects.loja.integration.response.MockResponseData;
 import br.com.pvprojects.loja.service.BuyService;
@@ -35,9 +35,9 @@ public class BuyController {
     }
 
     @GetMapping("/buy/purchases")
-    public ResponseEntity<List<HistoricResponse>> getHistoric(@QueryParam("login") String login) {
+    public ResponseEntity<List<HistoryResponse>> getHistory(@QueryParam("login") String login) {
 
-        List<HistoricResponse> list = buyService.getHistoricByLogin(login);
+        List<HistoryResponse> list = buyService.getHistoryByLogin(login);
 
         return new ResponseEntity<>(list, HttpStatus.OK);
     }

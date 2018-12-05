@@ -1,5 +1,20 @@
 package br.com.pvprojects.loja.domain.request;
 
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_BAIRRO_NAO_INFORMADO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_BAIRRO_NAO_INVALIDO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_CEP_INVALIDO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_CEP_NAO_INFORMADO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_CEP_SIZE;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_CIDADE_INVALIDO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_CIDADE_NAO_INFORMADO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_ESTADO_INVALIDO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_ESTADO_NAO_INFORMADO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_LOGRADOURO_INVALIDO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_LOGRADOURO_NAO_INFORMADO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_NOME_NAO_INFORMADO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_NUMERO_INVALIDO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_NUMERO_NAO_INFORMADO;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
@@ -7,31 +22,32 @@ import org.hibernate.validator.constraints.Length;
 
 public class AddressRequest {
 
-    @NotBlank(message = "O nome do endereço não pode ser vazio ou nulo")
+    @NotBlank(message = CAMPO_NOME_NAO_INFORMADO)
     private String name;
 
-    @Length(min = 8, message = "O zipCode não pode ter menos de 8 caracteres")
-    @NotBlank(message = "O cep não pode ser vazio ou nulo")
-    @Pattern(regexp = "\\d{3,10}", message = "O cep é inválido")
+    @Length(min = 8, message = CAMPO_CEP_SIZE)
+    @NotBlank(message = CAMPO_CEP_NAO_INFORMADO)
+    @Pattern(regexp = "\\d{3,10}", message = CAMPO_CEP_INVALIDO)
     private String zipCode;
 
-    @NotBlank(message = "O número não pode ser vazio ou nulo")
-    @Pattern(regexp = "\\d*", message = "Número inválido.")
+    @NotBlank(message = CAMPO_NUMERO_NAO_INFORMADO)
+    @Pattern(regexp = "\\d*", message = CAMPO_NUMERO_INVALIDO)
     private String number;
 
-    @NotBlank(message = "O logradouro não pode ser vazio ou nulo")
-    @Pattern(regexp = "\\p{L}+((\\s\\p{L}+)*)", message = "Password inválido. O password deve conter 6 dígitos.")
+    @NotBlank(message = CAMPO_LOGRADOURO_NAO_INFORMADO)
+    @Pattern(regexp = "\\p{L}+((\\s\\p{L}+)*)", message = CAMPO_LOGRADOURO_INVALIDO)
     private String street;
 
-    @NotBlank(message = "O bairro não pode ser vazio ou nulo")
-    @Pattern(regexp = "[a-zA-Z\\u00C0-\\u00FF0-9 ]*", message = "Bairro inválido.")
+    @NotBlank(message = CAMPO_BAIRRO_NAO_INFORMADO)
+    @Pattern(regexp = "[a-zA-Z\\u00C0-\\u00FF0-9 ]*", message = CAMPO_BAIRRO_NAO_INVALIDO)
     private String district;
 
-    @NotBlank(message = "O nome da cidade não pode ser vazio ou nulo")
-    @Pattern(regexp = "\\p{L}+((\\s\\p{L}+)*)", message = "Cidade inválida.")
+    @NotBlank(message = CAMPO_CIDADE_NAO_INFORMADO)
+    @Pattern(regexp = "\\p{L}+((\\s\\p{L}+)*)", message = CAMPO_CIDADE_INVALIDO)
     private String city;
 
-    @NotBlank(message = "O estado não pode ser vazio ou nulo")
+    @NotBlank(message = CAMPO_ESTADO_NAO_INFORMADO)
+    @Pattern(regexp = "\\p{L}+((\\s\\p{L}+)*)", message = CAMPO_ESTADO_INVALIDO)
     private String state;
 
     private String complement;
