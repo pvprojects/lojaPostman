@@ -1,5 +1,8 @@
 package br.com.pvprojects.loja.domain.form;
 
+import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_DOCUMENT_TYPE;
+import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_NUMBER;
+
 import java.util.Objects;
 
 import javax.validation.constraints.NotBlank;
@@ -11,10 +14,10 @@ import br.com.pvprojects.loja.util.enums.Type;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DocumentChange {
 
-    @NotBlank(message = "O número não pode ser vazio ou nulo")
+    @NotBlank(message = INVALID_NUMBER)
     private String number;
 
-    @NotBlank(message = "O  tipo do documento não pode ser vazio ou nulo")
+    @NotBlank(message = INVALID_DOCUMENT_TYPE)
     private Type type;
 
     public DocumentChange() {

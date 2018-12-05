@@ -1,5 +1,11 @@
 package br.com.pvprojects.loja.domain.request;
 
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_CUSTOMERID_NAO_INFORMADO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.EMPTY_NULL_LOGIN;
+import static br.com.pvprojects.loja.util.ConventionsHelper.EMPTY_NULL_PASSWORD;
+import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_LOGIN;
+import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_PASSWORD_SIZE;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -9,15 +15,15 @@ import javax.validation.constraints.Pattern;
 
 public class CredentialRequest implements Serializable {
 
-    @NotBlank(message = "O customerId não pode ser vazio ou nulo")
+    @NotBlank(message = CAMPO_CUSTOMERID_NAO_INFORMADO)
     private String customerId;
 
-    @NotBlank(message = "O login não pode ser vazio ou nulo")
-    @Email(message = "O login informado é inválido.")
+    @NotBlank(message = EMPTY_NULL_LOGIN)
+    @Email(message = INVALID_LOGIN)
     private String login;
 
-    @NotBlank(message = "O password não pode ser vazio ou nulo")
-    @Pattern(regexp = "\\d{6}$", message = "Password inválido. O password deve conter 6 dígitos.")
+    @NotBlank(message = EMPTY_NULL_PASSWORD)
+    @Pattern(regexp = "\\d{6}$", message = INVALID_PASSWORD_SIZE)
     private String password;
 
     private String perfil;

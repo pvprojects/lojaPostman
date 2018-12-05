@@ -19,15 +19,15 @@ import br.com.pvprojects.loja.util.dateHelper.LocalDateDeserializer;
 import br.com.pvprojects.loja.util.dateHelper.LocalDateSerializer;
 
 @Entity
-@Table(name = "HISTORIC")
-@SequenceGenerator(name = "HISTORIC_SEQ", sequenceName = "HISTORIC_SEQ", allocationSize = 1)
-public class Historic {
+@Table(name = "HISTORY")
+@SequenceGenerator(name = "HISTORY_SEQ", sequenceName = "HISTORY_SEQ", allocationSize = 1)
+public class History {
 
-    public Historic() {
+    public History() {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "HISTORIC_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "HISTORY_SEQ")
     @Column(name = "ID")
     private Integer id;
 
@@ -100,13 +100,13 @@ public class Historic {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Historic historic = (Historic) o;
-        return Objects.equals(id, historic.id) &&
-                Objects.equals(login, historic.login) &&
-                Objects.equals(customerId, historic.customerId) &&
-                Objects.equals(item, historic.item) &&
-                Objects.equals(price, historic.price) &&
-                Objects.equals(created, historic.created);
+        History history = (History) o;
+        return Objects.equals(id, history.id) &&
+                Objects.equals(login, history.login) &&
+                Objects.equals(customerId, history.customerId) &&
+                Objects.equals(item, history.item) &&
+                Objects.equals(price, history.price) &&
+                Objects.equals(created, history.created);
     }
 
     @Override
@@ -116,7 +116,7 @@ public class Historic {
 
     @Override
     public String toString() {
-        return "Historic{" +
+        return "History{" +
                 "id=" + id +
                 ", login='" + login + '\'' +
                 ", customerId='" + customerId + '\'' +

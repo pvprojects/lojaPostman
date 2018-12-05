@@ -1,5 +1,14 @@
 package br.com.pvprojects.loja.service.impl;
 
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_EMAIL_INVALIDO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_NUMERO_DOC_INVALIDO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_TIPO_INVALIDO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CUSTOMER_NOT_FOUND;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_ATUALIZAR_DOCUMENTS;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_CRIAR_DOCUMENTS;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_DOCUMENTS_ALREADY_EXIST;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_DOCUMENTS_NOT_FOUND;
 import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_REQUEST;
 
 import java.time.LocalDateTime;
@@ -40,10 +49,10 @@ public class DocumentServiceImpl implements DocumentService {
     @Transactional
     public DocumentsResponse create(DocumentRequest documentRequest, String login) {
         Helper.checkIfObjectIsNull(documentRequest, INVALID_REQUEST);
-        Helper.checkIfStringIsBlank(login, "customerId inválido.");
+        Helper.checkIfStringIsBlank(login, CAMPO_EMAIL_INVALIDO);
 
         Customer customer = customerRepository.findByLogin(login.toLowerCase());
-        Helper.checkIfObjectIsNull(customer, "Usuário não encontrado.");
+        Helper.checkIfObjectIsNull(customer, CUSTOMER_NOT_FOUND);
 
         this.validateDocumentByPerson(documentRequest);
 
@@ -56,8 +65,8 @@ public class DocumentServiceImpl implements DocumentService {
             document.setType(Type.valueOf(documentRequest.getType()));
             this.documentRepository.saveAndFlush(document);
         } catch (Exception e) {
-            log.error("Erro ao criar o documento.");
-            throw new DefaultException("Erro ao criar o documento.");
+            log.error(ERRO_CRIAR_DOCUMENTS);
+            throw new DefaultException(ERRO_CRIAR_DOCUMENTS);
         }
 
         documentsResponse = this.documentToDocumentResponse(document);
@@ -68,10 +77,10 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public List<DocumentsResponse> findAllDocuments(String login) {
         Customer customer = customerRepository.findByLogin(login.toLowerCase());
-        Helper.checkIfObjectIsNull(customer,"Usuário não encontrado.");
+        Helper.checkIfObjectIsNull(customer, CUSTOMER_NOT_FOUND);
 
         List<Document> list = this.documentRepository.findByCustomerId(customer.getId());
-        Helper.checkIfCollectionIsNullOrEmpty(list, "O usuário não possui nenhum documento salvo.");
+        Helper.checkIfCollectionIsNullOrEmpty(list, ERRO_DOCUMENTS_NOT_FOUND);
 
         List<DocumentsResponse> docs = new ArrayList<>();
 
@@ -85,7 +94,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public DocumentsResponse find(Type type, String number) {
-        Helper.checkIfStringIsBlank(number, "número inválido.");
+        Helper.checkIfStringIsBlank(number, CAMPO_NUMERO_DOC_INVALIDO);
 
         Document document = this.documentRepository.findByTypeAndNumber(type, number);
         return this.documentToDocumentResponse(document);
@@ -94,9 +103,9 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     @Transactional
     public DocumentsResponse changeDocument(String type, String number, String login, DocumentChange documentChange) {
-        Helper.checkIfStringIsBlank(type, "Tipo do documento inválido.");
-        Helper.checkIfStringIsBlank(number, "Número do documento inválido.");
-        Helper.checkIfStringIsBlank(login, "Login inválido.");
+        Helper.checkIfStringIsBlank(type, CAMPO_TIPO_INVALIDO);
+        Helper.checkIfStringIsBlank(number, CAMPO_NUMERO_DOC_INVALIDO);
+        Helper.checkIfStringIsBlank(login, CAMPO_EMAIL_INVALIDO);
         Helper.checkIfObjectIsNull(documentChange, INVALID_REQUEST);
 
         validateType(type);
@@ -107,10 +116,10 @@ public class DocumentServiceImpl implements DocumentService {
             Validator.verifyIfCpfIsValid(number);
 
         Customer customer = customerRepository.findByLogin(login.toLowerCase());
-        Helper.checkIfObjectIsNull(customer, "Customer não encontrado.");
+        Helper.checkIfObjectIsNull(customer, CUSTOMER_NOT_FOUND);
 
         Document document = documentRepository.findByCustomerIdAndTypeAndNumber(customer.getId(), type2, number);
-        Helper.checkIfObjectIsNull(document, "Documents não encontrado.");
+        Helper.checkIfObjectIsNull(document, ERRO_DOCUMENTS_NOT_FOUND);
 
         try {
             document.setType(documentChange.getType());
@@ -118,8 +127,8 @@ public class DocumentServiceImpl implements DocumentService {
             document.setUpdated(LocalDateTime.now());
             documentRepository.saveAndFlush(document);
         } catch (Exception e) {
-            log.error("Erro ao atualizar o documento.");
-            throw new DefaultException("Erro ao atualizar o documento.");
+            log.error(ERRO_ATUALIZAR_DOCUMENTS);
+            throw new DefaultException(ERRO_ATUALIZAR_DOCUMENTS);
         }
         return this.documentToDocumentResponse(document);
     }
@@ -142,13 +151,13 @@ public class DocumentServiceImpl implements DocumentService {
         try {
             documentEntity = documentRepository.findByType(Type.valueOf(documentRequest.getType()));
         } catch (IllegalArgumentException e) {
-            throw new DefaultException("Tipo de documento inválido.");
+            throw new DefaultException(CAMPO_TIPO_INVALIDO);
         } catch (Exception ex) {
-            throw new DefaultException("Erro.");
+            throw new DefaultException(ERRO);
         }
 
         if (null != documentEntity)
-            throw new DefaultException(documentRequest.getType() + " já cadastrado para o usuário.");
+            throw new DefaultException(documentRequest.getType() + ERRO_DOCUMENTS_ALREADY_EXIST);
 
         return true;
     }
@@ -157,9 +166,9 @@ public class DocumentServiceImpl implements DocumentService {
         try {
             Type.valueOf(type.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new DefaultException("Tipo de documento inválido.");
+            throw new DefaultException(CAMPO_TIPO_INVALIDO);
         } catch (Exception ex) {
-            throw new DefaultException("Erro.");
+            throw new DefaultException(ERRO);
         }
         return true;
     }

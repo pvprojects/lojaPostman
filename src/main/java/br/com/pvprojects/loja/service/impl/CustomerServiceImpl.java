@@ -1,13 +1,21 @@
 package br.com.pvprojects.loja.service.impl;
 
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_CUSTOMERID_INVALIDO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CAMPO_LOGIN_CUSTOMERID_INVALIDO;
+import static br.com.pvprojects.loja.util.ConventionsHelper.CUSTOMER_NOT_FOUND;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_ATUALIZAR_CUSTOMER;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_CRIAR_CUSTOMER;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_CUSTOMER_ENUM;
+import static br.com.pvprojects.loja.util.ConventionsHelper.ERRO_PARSE_RESPONSE;
 import static br.com.pvprojects.loja.util.ConventionsHelper.INVALID_REQUEST;
+import static br.com.pvprojects.loja.util.ConventionsHelper.LOGIN_UNIQUE;
+import static br.com.pvprojects.loja.util.Helper.createPasswordByBCrypt;
 
 import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,8 +58,8 @@ public class CustomerServiceImpl implements CustomerService {
         try {
             this.customerRepository.saveAndFlush(customer);
         } catch (Exception e) {
-            log.error("Erro ao criar customer");
-            throw new DefaultException("Erro ao criar customer");
+            log.error(ERRO_CRIAR_CUSTOMER);
+            throw new DefaultException(ERRO_CRIAR_CUSTOMER);
         }
 
         this.credentialService.createWithCustomer(customer);
@@ -66,12 +74,12 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerResponse updateCustomer(String customerId, CustomerResquest customerResquest) {
 
         Helper.checkIfObjectIsNull(customerResquest, INVALID_REQUEST);
-        Helper.checkIfStringIsBlank(customerId, "customerId inválido.");
+        Helper.checkIfStringIsBlank(customerId, CAMPO_CUSTOMERID_INVALIDO);
         this.loginIsUnique(customerResquest.getLogin());
 
         final Customer customerPersisted = customerRepository.findOne(customerId);
 
-        Helper.checkIfObjectIsNull(customerPersisted, "Usuário não encontrado.");
+        Helper.checkIfObjectIsNull(customerPersisted, CUSTOMER_NOT_FOUND);
 
         String oldLogin = customerPersisted.getLogin();
 
@@ -94,10 +102,10 @@ public class CustomerServiceImpl implements CustomerService {
             this.customerRepository.saveAndFlush(customerPersisted);
 
         } catch (IllegalArgumentException e) {
-            throw new DefaultException("Genero ou PersonType inválido.");
+            throw new DefaultException(ERRO_CUSTOMER_ENUM);
         } catch (Exception e) {
-            log.error("Erro ao atualizar customer.");
-            throw new DefaultException("Erro ao atualizar customer.");
+            log.error(ERRO_ATUALIZAR_CUSTOMER);
+            throw new DefaultException(ERRO_ATUALIZAR_CUSTOMER);
         }
 
         CustomerResponse customerResponse = this.customerToCustomerResponse(customerPersisted);
@@ -109,7 +117,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerResponse findByIdOrLogin(String customerId) {
-        Helper.checkIfStringIsBlank(customerId, "customerId ou email inválido.");
+        Helper.checkIfStringIsBlank(customerId, CAMPO_LOGIN_CUSTOMERID_INVALIDO);
 
         Customer customerById = customerRepository.findOne(customerId);
 
@@ -141,14 +149,14 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setMotherName(customerResquest.getMotherName());
             customer.setFatherName(customerResquest.getFatherName());
             customer.setLogin(customerResquest.getLogin());
-            customer.setPassword(new BCryptPasswordEncoder().encode(customerResquest.getPassword()));
+            customer.setPassword(createPasswordByBCrypt(customerResquest.getPassword()));
             customer.setNumberOfChildren(customerResquest.getNumberOfChildren() != null ?
                     customerResquest.getNumberOfChildren() : 0);
             customer.setParentId(customerResquest.getParentId());
         } catch (IllegalArgumentException e) {
-            throw new DefaultException("Genero ou PersonType inválido.");
+            throw new DefaultException(ERRO_CUSTOMER_ENUM);
         } catch (Exception e) {
-            throw new DefaultException("Erro ao parsear response.");
+            throw new DefaultException(ERRO_PARSE_RESPONSE);
         }
 
         return customer;
@@ -181,7 +189,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customerOptional = this.customerRepository.findByLogin(login.toLowerCase());
 
         if (null != customerOptional)
-            Helper.checkIfObjectIsNull(customerOptional, "O login informado já existe.");
+            Helper.checkIfObjectIsNull(customerOptional, LOGIN_UNIQUE);
 
         return true;
     }
