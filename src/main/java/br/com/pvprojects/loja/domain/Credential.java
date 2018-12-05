@@ -1,15 +1,17 @@
 package br.com.pvprojects.loja.domain;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -19,7 +21,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import br.com.pvprojects.loja.util.dateHelper.LocalDateDeserializer;
 import br.com.pvprojects.loja.util.dateHelper.LocalDateSerializer;
-import br.com.pvprojects.loja.util.enums.Perfil;
 
 @Entity
 @Table(name = "CREDENTIAL")
@@ -31,8 +32,8 @@ public class Credential {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CREDENTIAL_SEQ")
-    @Column(name = "ID")
-    private Integer id;
+    @Column(name = "CODIGO")
+    private Integer codigo;
 
     @Column(name = "CUSTOMERID")
     private String customerId;
@@ -43,9 +44,10 @@ public class Credential {
     @Column(name = "PASSWORD")
     private String password;
 
-    @Column(name = "PERFIL")
-    @Enumerated(EnumType.STRING)
-    private Perfil perfil;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "credential_permissao", joinColumns = @JoinColumn(name = "codigo_credential")
+            , inverseJoinColumns = @JoinColumn(name = "codigo_permissao"))
+    private List<Permissao> permissoes;
 
     @Column(name = "CREATED_AT")
     @JsonSerialize(using = LocalDateSerializer.class)
@@ -57,12 +59,12 @@ public class Credential {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDateTime updated;
 
-    public Integer getId() {
-        return id;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCodigo(Integer codigo) {
+        this.codigo = codigo;
     }
 
     public String getCustomerId() {
@@ -89,12 +91,12 @@ public class Credential {
         this.password = password;
     }
 
-    public Perfil getPerfil() {
-        return perfil;
+    public List<Permissao> getPermissoes() {
+        return permissoes;
     }
 
-    public void setPerfil(Perfil perfil) {
-        this.perfil = perfil;
+    public void setPermissoes(List<Permissao> permissoes) {
+        this.permissoes = permissoes;
     }
 
     public LocalDateTime getCreated() {
@@ -111,38 +113,6 @@ public class Credential {
 
     public void setUpdated(LocalDateTime updated) {
         this.updated = updated;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Credential that = (Credential) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(customerId, that.customerId) &&
-                Objects.equals(login, that.login) &&
-                Objects.equals(password, that.password) &&
-                perfil == that.perfil &&
-                Objects.equals(created, that.created) &&
-                Objects.equals(updated, that.updated);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, customerId, login, password, perfil, created, updated);
-    }
-
-    @Override
-    public String toString() {
-        return "Credential{" +
-                "id=" + id +
-                ", customerId='" + customerId + '\'' +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", perfil=" + perfil +
-                ", created=" + created +
-                ", updated=" + updated +
-                '}';
     }
 
     @PrePersist
