@@ -24,9 +24,9 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    @PostMapping
     @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')  and #oauth2" +
             ".hasScope('write')")
+    @PostMapping
     public ResponseEntity<CustomerResponse> createCustomer(@RequestBody CustomerResquest customerResquest) {
 
         CustomerResponse customerResponse = this.customerService.create(customerResquest);
@@ -34,9 +34,10 @@ public class CustomerController {
         return new ResponseEntity<>(new CustomerResponse(customerResponse.getId()), HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "/{customerId}")
+
     @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')  and #oauth2" +
             ".hasScope('read')")
+    @GetMapping(path = "/{customerId}")
     public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable(name = "customerId") String customerId) {
 
         CustomerResponse customerResponse = this.customerService.findByIdOrLogin(customerId);
