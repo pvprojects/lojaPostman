@@ -7,6 +7,7 @@ import javax.ws.rs.QueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,8 @@ public class DocumentController {
     private DocumentService documentService;
 
     @PostMapping(path = "/create")
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')  and #oauth2" +
+            ".hasScope('write')")
     public ResponseEntity<DocumentsResponse> createDocument(@RequestBody DocumentRequest documentRequest,
             @QueryParam("login") String login) {
 
@@ -39,6 +42,8 @@ public class DocumentController {
     }
 
     @GetMapping
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')  and #oauth2" +
+            ".hasScope('read')")
     public ResponseEntity<List<DocumentsResponse>> getAllDocuments(@QueryParam("email") String email) {
 
         List<DocumentsResponse> list = this.documentService.findAllDocuments(email);
@@ -46,6 +51,8 @@ public class DocumentController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')  and #oauth2" +
+            ".hasScope('read')")
     @GetMapping(path = "/find/cpf/{number}")
     public ResponseEntity<DocumentsResponse> getDocument(@PathVariable(name = "number") String number) {
 
@@ -55,6 +62,8 @@ public class DocumentController {
     }
 
     @PutMapping(path = "/change/{type}/{number}")
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')  and #oauth2" +
+            ".hasScope('write')")
     public ResponseEntity<Void> changeDocument(@PathVariable(name = "type") String type,
             @PathVariable(name = "number") String number,
             @QueryParam("login") String login,

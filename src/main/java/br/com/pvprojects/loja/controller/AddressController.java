@@ -23,8 +23,8 @@ public class AddressController {
     private AddressService addressService;
 
     @PostMapping(path = "/create")
-    @PreAuthorize(value = "hasAuthority('ROLE_PESQUISAR_HORARIO') or hasAuthority('ROLE_ADMIN')  and #oauth2" +
-            ".hasScope('read')")
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')  and #oauth2" +
+            ".hasScope('write')")
     public ResponseEntity<AddressResponse> createAddress(@RequestBody AddressRequest addressRequest,
             @QueryParam("login") String login) {
 

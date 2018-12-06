@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS ADDRESS(
     state VARCHAR (80) NOT NULL,
     country VARCHAR (50),
     customerid VARCHAR (150) NOT NULL,
-    created_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP,
 
     PRIMARY KEY (id)
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS CUSTOMER(
     password VARCHAR (130) NOT NULL,
     number_of_children INTEGER,
     parent_Id VARCHAR (100),
-    created_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP,
 
     PRIMARY KEY (id)
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS DOCUMENT (
     customerid  VARCHAR (120) NOT NULL,
     document_type VARCHAR (25) NOT NULL,
     document_number VARCHAR (30) NOT NULL,
-    created_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP,
 
     PRIMARY KEY (id)
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS HISTORY(
     customerid  VARCHAR (120) NOT NULL,
     item VARCHAR (40) NOT NULL,
     price VARCHAR(20) NOT NULL,
-   created_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
 
    PRIMARY KEY (id)
 );

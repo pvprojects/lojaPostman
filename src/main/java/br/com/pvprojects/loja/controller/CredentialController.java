@@ -5,6 +5,7 @@ import javax.ws.rs.QueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,6 +28,8 @@ public class CredentialController {
     private CredentialService credentialService;
 
     @GetMapping(path = "/login")
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')  and #oauth2" +
+            ".hasScope('read')")
     public ResponseEntity<CredentialResponse> getCredentialByLogin(@QueryParam("email") String email) {
 
         CredentialResponse credentialResponse = this.credentialService.findByLogin(email);
@@ -35,6 +38,8 @@ public class CredentialController {
     }
 
     @PutMapping(path = "/login")
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')  and #oauth2" +
+            ".hasScope('write')")
     public ResponseEntity<Void> changeLogin(@QueryParam("email") String email,
             @RequestBody CredentialChangeLogin credentialChangeLogin) {
 
@@ -44,6 +49,8 @@ public class CredentialController {
     }
 
     @PutMapping(path = "/login/password")
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') and #oauth2" +
+            ".hasScope('write')")
     public ResponseEntity<Void> changePassword(@QueryParam("email") String email,
             @RequestBody CredentialResetPassword credentialResetPassword) {
 
@@ -53,6 +60,8 @@ public class CredentialController {
     }
 
     @PutMapping(path = "/login/change")
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') and #oauth2" +
+            ".hasScope('write')")
     public ResponseEntity<Void> changeLoginAndPassword(@QueryParam("email") String email,
             @RequestBody CredentialChangeLoginAndPassword credentialChangeLoginAndPassword) {
 
@@ -63,6 +72,8 @@ public class CredentialController {
     }
 
     @PostMapping("/login/recovery/password")
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') and #oauth2" +
+            ".hasScope('write')")
     public ResponseEntity<Void> recoveryPassword(@RequestBody PasswordRequest passwordRequest) {
         this.credentialService.recoveryPassword(passwordRequest.getLogin());
 

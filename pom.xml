@@ -87,6 +87,12 @@
             <version>1.18</version>
         </dependency>
 
+        <!-- Dependencia para JPA - LocalDateTime and Byte -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-java8</artifactId>
+        </dependency>
+
         <!-- Utilizar @notblank -->
         <dependency>
             <groupId>javax.validation</groupId>

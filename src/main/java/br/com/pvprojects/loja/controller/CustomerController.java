@@ -3,6 +3,7 @@ package br.com.pvprojects.loja.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,8 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PostMapping
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')  and #oauth2" +
+            ".hasScope('write')")
     public ResponseEntity<CustomerResponse> createCustomer(@RequestBody CustomerResquest customerResquest) {
 
         CustomerResponse customerResponse = this.customerService.create(customerResquest);
@@ -32,6 +35,8 @@ public class CustomerController {
     }
 
     @GetMapping(path = "/{customerId}")
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')  and #oauth2" +
+            ".hasScope('read')")
     public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable(name = "customerId") String customerId) {
 
         CustomerResponse customerResponse = this.customerService.findByIdOrLogin(customerId);
@@ -41,6 +46,8 @@ public class CustomerController {
     }
 
     @PutMapping(path = "/{customerId}")
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')  and #oauth2" +
+            ".hasScope('write')")
     public ResponseEntity<CustomerResponse> updateCustomer(@PathVariable(name = "customerId") String customerId,
             @RequestBody CustomerResquest customerResquest) {
 

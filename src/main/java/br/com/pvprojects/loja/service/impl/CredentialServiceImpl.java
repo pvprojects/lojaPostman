@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.pvprojects.loja.domain.Credential;
 import br.com.pvprojects.loja.domain.Customer;
+import br.com.pvprojects.loja.domain.Permissao;
 import br.com.pvprojects.loja.domain.request.CredentialRequest;
 import br.com.pvprojects.loja.domain.response.CredentialResponse;
 import br.com.pvprojects.loja.domain.response.CustomerResponse;
@@ -78,8 +79,7 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
             cretial.setCustomerId(credentialRequest.getCustomerId());
             cretial.setLogin(credentialRequest.getPassword());
             cretial.setPassword(createPasswordByBCrypt(credentialRequest.getPassword()));
-//            cretial.setPerfil(credentialRequest.getPerfil() != null ? Perfil.valueOf(credentialRequest.getPerfil()) :
-//                    Perfil.CLIENTE);
+            cretial.setPermissoes(Arrays.asList(createPermissoesForUser()));
             this.credentialRepository.saveAndFlush(cretial);
 
         } catch (IllegalArgumentException e) {
@@ -94,6 +94,20 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
         return credentialResponse;
     }
 
+    private Permissao createPermissoesForUser (){
+        Permissao p = new Permissao();
+        p.setCodigo(5L);
+        p.setDescricao("ROLE_USER");
+        return p;
+    }
+
+    private Permissao createPermissoesForAdmin (){
+        Permissao p = new Permissao();
+        p.setCodigo(5L);
+        p.setDescricao("ROLE_ADMIN");
+        return p;
+    }
+
     private CredentialResponse credentialToCredentialResponse(Credential credential) {
         CredentialResponse credentialResponse = new CredentialResponse();
 
@@ -101,7 +115,6 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
         credentialResponse.setCustomerId(credential.getCustomerId());
         credentialResponse.setLogin(credential.getLogin());
         credentialResponse.setPassword("* * *");
-//        credentialResponse.setPerfil(credential.getPerfil());
         credentialResponse.setCreated(credential.getCreated());
         credentialResponse.setUpdated(credential.getUpdated());
         return credentialResponse;
@@ -118,7 +131,7 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
         credential.setCustomerId(customer.getId());
         credential.setLogin(customer.getLogin());
         credential.setPassword(customer.getPassword());
-//        credential.setPerfil(Perfil.CLIENTE);
+        credential.setPermissoes(Arrays.asList(createPermissoesForUser()));
 
         try {
             this.credentialRepository.saveAndFlush(credential);
@@ -140,7 +153,6 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
         credentialResponse.setCustomerId(credential.getCustomerId());
         credentialResponse.setLogin(credential.getLogin());
         credentialResponse.setPassword("* * *");
-//        credentialResponse.setPerfil(credential.getPerfil());
         credentialResponse.setCreated(credential.getCreated());
         credentialResponse.setUpdated(credential.getUpdated());
 

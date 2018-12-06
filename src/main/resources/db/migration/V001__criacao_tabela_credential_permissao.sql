@@ -48,6 +48,7 @@ INSERT INTO permissao (codigo, descricao) values (2, 'ROLE_CUSTOMER_WRITE');
 INSERT INTO permissao (codigo, descricao) values (3, 'ROLE_CUSTOMER_REMOVE');
 
 INSERT INTO permissao (codigo, descricao) values (4, 'ROLE_ADMIN');
+INSERT INTO permissao (codigo, descricao) values (5, 'ROLE_USER');
 
 -- admin
 INSERT INTO credential_permissao (codigo_credential, codigo_permissao) values (1, 4);

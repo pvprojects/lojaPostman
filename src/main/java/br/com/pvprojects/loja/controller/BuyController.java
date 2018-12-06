@@ -7,6 +7,7 @@ import javax.ws.rs.QueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,8 @@ public class BuyController {
     private BuyService buyService;
 
     @PostMapping(path = "/buy/{number}")
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')  and #oauth2" +
+            ".hasScope('write')")
     public ResponseEntity<MockResponseData> buy(@QueryParam("login") String login,
             @PathVariable(name = "number") String number,
             @RequestBody MockRequestData requestData) {
@@ -35,6 +38,8 @@ public class BuyController {
     }
 
     @GetMapping("/buy/purchases")
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')  and #oauth2" +
+            ".hasScope('read')")
     public ResponseEntity<List<HistoryResponse>> getHistory(@QueryParam("login") String login) {
 
         List<HistoryResponse> list = buyService.getHistoryByLogin(login);
