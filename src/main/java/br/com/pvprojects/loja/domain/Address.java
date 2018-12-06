@@ -31,13 +31,13 @@ public class Address {
     @Column(name = "ID")
     private Integer id;
 
-    @Column(name = "NAME")
+    @Column(name = "USER_NAME")
     private String name;
 
     @Column(name = "ZIPCODE")
     private String zipCode;
 
-    @Column(name = "NUMBER")
+    @Column(name = "ADDRESS_NUMBER")
     private String number;
 
     @Column(name = "COMPLEMENT")

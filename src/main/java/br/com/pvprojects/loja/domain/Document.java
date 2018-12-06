@@ -37,11 +37,11 @@ public class Document {
     @Column(name = "CUSTOMERID")
     private String customerId;
 
-    @Column(name = "TYPE")
+    @Column(name = "DOCUMENT_TYPE")
     @Enumerated(EnumType.STRING)
     private Type type;
 
-    @Column(name = "NUMBER")
+    @Column(name = "DOCUMENT_NUMBER")
     private String number;
 
     @Column(name = "CREATED_AT")

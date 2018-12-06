@@ -5,6 +5,7 @@ import javax.ws.rs.QueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,8 @@ public class AddressController {
     private AddressService addressService;
 
     @PostMapping(path = "/create")
+    @PreAuthorize(value = "hasAuthority('ROLE_PESQUISAR_HORARIO') or hasAuthority('ROLE_ADMIN')  and #oauth2" +
+            ".hasScope('read')")
     public ResponseEntity<AddressResponse> createAddress(@RequestBody AddressRequest addressRequest,
             @QueryParam("login") String login) {
 

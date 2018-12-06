@@ -1,0 +1,86 @@
+-- ADDRESS
+CREATE TABLE IF NOT EXISTS ADDRESS(
+
+    id BIGINT NOT NULL,
+    user_name VARCHAR (100) NOT NULL,
+    zipCode VARCHAR (10) NOT NULL,
+    address_number VARCHAR (8) NOT NULL,
+    complement VARCHAR (50),
+    street VARCHAR (80) NOT NULL,
+    district VARCHAR (80) NOT NULL,
+    city VARCHAR (80) NOT NULL,
+    state VARCHAR (80) NOT NULL,
+    country VARCHAR (50),
+    customerid VARCHAR (150) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP,
+
+    PRIMARY KEY (id)
+);
+
+CREATE SEQUENCE IF NOT EXISTS ADDRESS_SEQ
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+-- CUSTOMER
+CREATE TABLE IF NOT EXISTS CUSTOMER(
+
+    id VARCHAR (120) NOT NULL,
+    full_name VARCHAR (150) NOT NULL,
+    person_type VARCHAR (2) NOT NULL,
+    nickname VARCHAR (100) NOT NULL,
+    birth_date VARCHAR (10) NOT NULL,
+    country VARCHAR (30),
+    gender VARCHAR (2) NOT NULL,
+    mother_name VARCHAR (150) NOT NULL,
+    father_name VARCHAR (150),
+    login VARCHAR (150) NOT NULL,
+    password VARCHAR (130) NOT NULL,
+    number_of_children INTEGER,
+    parent_Id VARCHAR (100),
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP,
+
+    PRIMARY KEY (id)
+);
+
+-- DOCUMENTS
+CREATE TABLE IF NOT EXISTS DOCUMENT (
+
+    id BIGINT NOT NULL,
+    customerid  VARCHAR (120) NOT NULL,
+    document_type VARCHAR (25) NOT NULL,
+    document_number VARCHAR (30) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP,
+
+    PRIMARY KEY (id)
+);
+CREATE SEQUENCE IF NOT EXISTS DOCUMENT_SEQ
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+-- HISTORY
+CREATE TABLE IF NOT EXISTS HISTORY(
+
+    id BIGINT NOT NULL,
+    login VARCHAR (150) NOT NULL,
+    customerid  VARCHAR (120) NOT NULL,
+    item VARCHAR (40) NOT NULL,
+    price VARCHAR(20) NOT NULL,
+   created_at TIMESTAMP NOT NULL,
+
+   PRIMARY KEY (id)
+);
+CREATE SEQUENCE IF NOT EXISTS HISTORY_SEQ
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
