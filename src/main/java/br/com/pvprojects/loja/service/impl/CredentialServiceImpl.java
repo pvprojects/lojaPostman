@@ -18,14 +18,17 @@ import static br.com.pvprojects.loja.util.ConventionsHelper.LOGIN_UNIQUE;
 import static br.com.pvprojects.loja.util.Helper.createPasswordByBCrypt;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -42,9 +45,9 @@ import br.com.pvprojects.loja.infra.handle.exceptions.DefaultException;
 import br.com.pvprojects.loja.infra.mail.SendEmail;
 import br.com.pvprojects.loja.repository.CredentialRepository;
 import br.com.pvprojects.loja.repository.CustomerRepository;
+import br.com.pvprojects.loja.security.UsuarioSistema;
 import br.com.pvprojects.loja.service.CredentialService;
 import br.com.pvprojects.loja.util.Helper;
-import br.com.pvprojects.loja.util.enums.Perfil;
 
 @Service(value = "userService")
 public class CredentialServiceImpl implements CredentialService, UserDetailsService {
@@ -75,8 +78,8 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
             cretial.setCustomerId(credentialRequest.getCustomerId());
             cretial.setLogin(credentialRequest.getPassword());
             cretial.setPassword(createPasswordByBCrypt(credentialRequest.getPassword()));
-            cretial.setPerfil(credentialRequest.getPerfil() != null ? Perfil.valueOf(credentialRequest.getPerfil()) :
-                    Perfil.CLIENTE);
+//            cretial.setPerfil(credentialRequest.getPerfil() != null ? Perfil.valueOf(credentialRequest.getPerfil()) :
+//                    Perfil.CLIENTE);
             this.credentialRepository.saveAndFlush(cretial);
 
         } catch (IllegalArgumentException e) {
@@ -94,11 +97,11 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
     private CredentialResponse credentialToCredentialResponse(Credential credential) {
         CredentialResponse credentialResponse = new CredentialResponse();
 
-        credentialResponse.setId(credential.getId());
+        credentialResponse.setId(credential.getCodigo());
         credentialResponse.setCustomerId(credential.getCustomerId());
         credentialResponse.setLogin(credential.getLogin());
         credentialResponse.setPassword("* * *");
-        credentialResponse.setPerfil(credential.getPerfil());
+//        credentialResponse.setPerfil(credential.getPerfil());
         credentialResponse.setCreated(credential.getCreated());
         credentialResponse.setUpdated(credential.getUpdated());
         return credentialResponse;
@@ -115,7 +118,7 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
         credential.setCustomerId(customer.getId());
         credential.setLogin(customer.getLogin());
         credential.setPassword(customer.getPassword());
-        credential.setPerfil(Perfil.CLIENTE);
+//        credential.setPerfil(Perfil.CLIENTE);
 
         try {
             this.credentialRepository.saveAndFlush(credential);
@@ -133,11 +136,11 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
         Helper.checkIfObjectIsNull(credential, ERRO_CREDENTIAL_NAO_ENCONTRADA);
 
         CredentialResponse credentialResponse = new CredentialResponse();
-        credentialResponse.setId(credential.getId());
+        credentialResponse.setId(credential.getCodigo());
         credentialResponse.setCustomerId(credential.getCustomerId());
         credentialResponse.setLogin(credential.getLogin());
         credentialResponse.setPassword("* * *");
-        credentialResponse.setPerfil(credential.getPerfil());
+//        credentialResponse.setPerfil(credential.getPerfil());
         credentialResponse.setCreated(credential.getCreated());
         credentialResponse.setUpdated(credential.getUpdated());
 
@@ -247,16 +250,22 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
     }
 
     public UserDetails loadUserByUsername(String login) {
+
         Credential credential = this.credentialRepository.findByLoginIgnoreCase(login);
+
         if (null == credential) {
             throw new UsernameNotFoundException(AUTH_ERROR);
         }
-        return new org.springframework.security.core.userdetails.User(credential.getLogin(), credential.getPassword(),
-                getAuthority(credential));
+
+
+        return new UsuarioSistema(credential, getPermissoes(credential));
     }
 
-    private List getAuthority(Credential user) {
-        return Arrays.asList(new SimpleGrantedAuthority(user.getPerfil().name()));
+    private Collection<? extends GrantedAuthority> getPermissoes(Credential credential) {
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        credential.getPermissoes().forEach(
+                p -> authorities.add(new SimpleGrantedAuthority(p.getDescricao().toUpperCase())));
+        return authorities;
     }
 
     private boolean loginIsUnique(String login) {
