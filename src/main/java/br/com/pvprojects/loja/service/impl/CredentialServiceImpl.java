@@ -253,7 +253,7 @@ public class CredentialServiceImpl implements CredentialService, UserDetailsServ
         map.put("senha", senha);
 
         try {
-            this.sendEmail.enviarEmail("eng.paulovieiraa@gmail.com", Arrays.asList(credential.getLogin()),
+            this.sendEmail.enviarEmail("rondonnaves@gmail.com", Arrays.asList(credential.getLogin()),
                     "Recuperação de senha", template, map);
         } catch (Exception e) {
             log.error(ERRO_RECUPERAR_PASSWORD);
