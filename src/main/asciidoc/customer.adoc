@@ -1,0 +1,17 @@
+= Customer
+
+== Create
+=== Sucess
+.Request
+include::{snippets}/customer-create/http-request.adoc[]
+.Response
+include::{snippets}/customer-create/http-response.adoc[]
+
+== Create
+=== Sucess
+.Request
+include::{snippets}/customer-find/http-request.adoc[]
+.Response
+include::{snippets}/customer-find/http-response.adoc[]
+.Fields
+include::{snippets}/customer-find/response-fields.adoc[]

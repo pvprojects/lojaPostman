@@ -1,5 +1,7 @@
 package br.com.pvprojects.loja.controller;
 
+import javax.ws.rs.QueryParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,17 +32,16 @@ public class CustomerController {
     public ResponseEntity<CustomerResponse> createCustomer(@RequestBody CustomerResquest customerResquest) {
 
         CustomerResponse customerResponse = this.customerService.create(customerResquest);
-
-        return new ResponseEntity<>(new CustomerResponse(customerResponse.getId()), HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 
     @PreAuthorize(value = "hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')  and #oauth2" +
             ".hasScope('read')")
-    @GetMapping(path = "/{customerId}")
-    public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable(name = "customerId") String customerId) {
+    @GetMapping
+    public ResponseEntity<CustomerResponse> getCustomerByLogin(@QueryParam("login") String login) {
 
-        CustomerResponse customerResponse = this.customerService.findByIdOrLogin(customerId);
+        CustomerResponse customerResponse = this.customerService.findByIdOrLogin(login);
         Helper.checkIfObjectIsNull(customerResponse, "Usuário não encontrado.");
 
         return new ResponseEntity<>(customerResponse, HttpStatus.OK);

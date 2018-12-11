@@ -13,8 +13,14 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
+/**
+ * @author Paulo Vieira
+ */
+
+/*Teste Unitarios Service*/
 @RunWith(SpringRunner.class)
-public abstract class BaseServiceTests {
+public abstract class DefaultBaseServiceTest {
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 

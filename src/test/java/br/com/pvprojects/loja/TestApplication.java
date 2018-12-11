@@ -1,12 +1,11 @@
-package br.com.pvprojects.loja.base;
+package br.com.pvprojects.loja;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BaseTestsApplication {
-
+public class TestApplication {
     public static void main(String[] args) {
-        SpringApplication.run(BaseTestsApplication.class, args);
+        SpringApplication.run(TestApplication.class, args);
     }
 }

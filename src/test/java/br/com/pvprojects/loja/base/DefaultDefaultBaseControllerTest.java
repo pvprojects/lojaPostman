@@ -17,11 +17,13 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import br.com.pvprojects.loja.base.util.MockMvcRequestBuilder;
+import br.com.pvprojects.loja.TestApplication;
 import br.com.pvprojects.loja.util.JsonHelper;
+import br.com.pvprojects.loja.util.MockMvcRequestBuilder;
 
-@ContextConfiguration(classes = BaseTestsApplication.class)
-public abstract class BaseControllerTests extends BaseServiceTests {
+/*Test Controllers*/
+@ContextConfiguration(classes = TestApplication.class)
+public abstract class DefaultDefaultBaseControllerTest extends DefaultBaseServiceTest {
 
     @Autowired
     private WebApplicationContext context;
@@ -39,13 +41,12 @@ public abstract class BaseControllerTests extends BaseServiceTests {
                 .apply(MockMvcRestDocumentation.documentationConfiguration(restDocumentation).uris()
                         .withScheme("https")
                         .withPort(8085)
-                        .withHost("localhost://")
+                        .withHost("automacao-zup.herokuapp.com")
                 )
                 .build();
 
         httpHeaders = new HttpHeaders();
 
-        httpHeaders.add("Authorization", "Bearer {{token}}");
         httpHeaders.add("Content-Type", "application/json");
         httpHeaders.add("Accept", "application/json");
     }

@@ -1,9 +1,7 @@
-package br.com.pvprojects.loja.base.util;
+package br.com.pvprojects.loja.util;
 
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import br.com.pvprojects.loja.util.JsonHelper;
 
 public class MockMvcRequestBuilder extends MockMvcRequestBuilders {
 
