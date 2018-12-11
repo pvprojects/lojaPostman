@@ -20,7 +20,7 @@ import br.com.pvprojects.loja.infra.handle.exceptions.DefaultException;
 public class ResourceExceptionHandler {
 
     @ExceptionHandler(DefaultException.class)
-    public ResponseEntity<StandardError> defaultException(DefaultException ex, HttpServletRequest request) {
+    public ResponseEntity<StandardError> defaultException(DefaultException ex) {
 
         StandardError err = new StandardError(ERRO, ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(err);

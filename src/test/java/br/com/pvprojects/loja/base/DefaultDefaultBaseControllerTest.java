@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.Before;
 import org.junit.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.restdocs.JUnitRestDocumentation;
@@ -18,12 +19,16 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import br.com.pvprojects.loja.TestApplication;
+import br.com.pvprojects.loja.infra.handle.ResourceExceptionHandler;
 import br.com.pvprojects.loja.util.JsonHelper;
 import br.com.pvprojects.loja.util.MockMvcRequestBuilder;
 
 /*Test Controllers*/
 @ContextConfiguration(classes = TestApplication.class)
 public abstract class DefaultDefaultBaseControllerTest extends DefaultBaseServiceTest {
+
+    @MockBean
+    public ResourceExceptionHandler resourceExceptionHandler;
 
     @Autowired
     private WebApplicationContext context;
