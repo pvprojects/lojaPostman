@@ -5,7 +5,7 @@ Projeto utilizando:
 - Oauth2 
 - JUnit
 
-##Guia de codificação
+## Guia de codificação
 
 Importar o estilo de codificação de acordo com sua IDE na pasta /styleguide
 
